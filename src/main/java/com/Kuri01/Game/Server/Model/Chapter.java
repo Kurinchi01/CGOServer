@@ -1,0 +1,35 @@
+package com.Kuri01.Game.Server.Model;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+
+import java.util.Set;
+
+@Entity
+public class Chapter {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
+    private Long id;
+    @Getter
+    private String name; // z.B. "Kapitel 1: Der Goblinwald"
+    @Getter
+    private String description;
+
+    // Ein Kapitel kann viele verschiedene Monster-Typen enthalten.
+    // Ein Monster-Typ (z.B. Goblin) kann in vielen Kapiteln vorkommen.
+    // Das ist eine klassische Many-to-Many-Beziehung.
+    @ManyToMany(fetch = FetchType.EAGER) // EAGER damit die Monster direkt mitgeladen werden
+    @JoinTable(
+            name = "chapter_monster_pool", // Name der Zwischentabelle
+            joinColumns = @JoinColumn(name = "chapter_id"),
+            inverseJoinColumns = @JoinColumn(name = "monster_id"))
+    private Set<Monster> monsters;
+
+    // Leerer Konstruktor für JPA
+    public Chapter() {
+    }
+
+
+}
