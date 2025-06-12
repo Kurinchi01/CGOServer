@@ -1,9 +1,6 @@
 package com.Kuri01.Game.Server.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,16 +10,12 @@ import static com.Kuri01.Game.Server.Model.Rarity.closest;
 
 @Entity
 public class Monster extends Character {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter
-    @Getter
-    private Long id;
+
 
     @Setter
     @Getter
+    @Enumerated
     private Rarity rarity;
-    Random r;
 
 
     // Wichtig für JPA: ein leerer Konstruktor
@@ -30,11 +23,11 @@ public class Monster extends Character {
     }
 
 
-    public Monster(String name, float maxHP, float attack) {
+    public Monster(String name, float maxHP, float attack, Rarity rarity) {
         super(name, maxHP, attack);
-        r = new Random();
-        this.rarity = closest(r.nextFloat()).get();
+        this.rarity = rarity;
 
     }
+
 
 }

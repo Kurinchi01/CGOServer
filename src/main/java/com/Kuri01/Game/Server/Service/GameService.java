@@ -2,6 +2,7 @@ package com.Kuri01.Game.Server.Service;
 
 import com.Kuri01.Game.Server.Model.Card;
 import com.Kuri01.Game.Server.Model.Monster;
+import com.Kuri01.Game.Server.Model.Rarity;
 import com.Kuri01.Game.Server.Model.RoundStartData;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +44,7 @@ public class GameService {
         List<Card> deckCards = new ArrayList<>(deck.subList(29, 52));
 
         // 7. Wähle ein Monster aus (wie zuvor)
-        Monster monster = new Monster("",500,5); // Platzhalter
+        Monster monster = new Monster("",500,5, Rarity.common); // Platzhalter
         monster.setName("Grumpy Goblin");
 
         // 8. Erstelle eine Runden-ID

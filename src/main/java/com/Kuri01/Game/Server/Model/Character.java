@@ -1,10 +1,19 @@
 package com.Kuri01.Game.Server.Model;
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import lombok.Getter;
+import lombok.Setter;
 
 @MappedSuperclass
+@Getter
+@Setter
 public class Character {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private float maxHp;
     private float attack;
@@ -22,35 +31,4 @@ public class Character {
 
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public float getMaxHp() {
-        return maxHp;
-    }
-
-    public void setMaxHp(float maxHp) {
-        this.maxHp = maxHp;
-    }
-
-    public float getAttack() {
-        return attack;
-    }
-
-    public void setAttack(float attack) {
-        this.attack = attack;
-    }
-
-    public float getChargeRate() {
-        return chargeRate;
-    }
-
-    public void setChargeRate(float chargeRate) {
-        this.chargeRate = chargeRate;
-    }
 }
