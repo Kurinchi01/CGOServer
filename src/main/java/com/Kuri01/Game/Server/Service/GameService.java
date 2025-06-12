@@ -1,9 +1,6 @@
 package com.Kuri01.Game.Server.Service;
 
-import com.Kuri01.Game.Server.Model.Card;
-import com.Kuri01.Game.Server.Model.Monster;
-import com.Kuri01.Game.Server.Model.Rarity;
-import com.Kuri01.Game.Server.Model.RoundStartData;
+import com.Kuri01.Game.Server.Model.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,7 +11,11 @@ import java.util.UUID;
 @Service
 public class GameService {
 
-    public RoundStartData createNewRound() {
+    public RoundStartData createNewRound(Long chapterID) {
+
+        Chapter chapter = chapterRepository.findById(chapterID)
+                .orElseThrow(() -> new IllegalArgumentException("Kapitel nicht gefunden: " + chapterID));
+
         // 1. Erstelle ein komplettes Kartendeck mit deiner Card-Klasse
         List<Card> deck = new ArrayList<>();
         for (Card.Suit suit : Card.Suit.values()) {

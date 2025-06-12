@@ -11,13 +11,12 @@ import static com.Kuri01.Game.Server.Model.Rarity.closest;
 @Entity
 public class Monster extends Character {
 
-
     @Setter
     @Getter
     @Enumerated
     private Rarity rarity;
 
-
+    
     // Wichtig für JPA: ein leerer Konstruktor
     protected Monster() {
     }
@@ -26,7 +25,6 @@ public class Monster extends Character {
     public Monster(String name, float maxHP, float attack, Rarity rarity) {
         super(name, maxHP, attack);
         this.rarity = rarity;
-
     }
 
 

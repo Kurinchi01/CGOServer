@@ -12,16 +12,16 @@ class MonsterTest {
     public void monsterGenerator()
     {
         for (int i = 0; i < 1000; i++) {
-           Monster monster = new Monster("Monster" + i, 100, 5);
-            switch (monster.getRarity())
-            {
-                case common -> cCount++;
-                case uncommon -> ucCount++;
-                case rare -> rCount++;
-                case epic -> eCount++;
-                case legendary -> lCount++;
-            }
-
+//          Monster monster = new Monster("Monster" + i, 100, 5);
+//            switch (monster.getRarity())
+//            {
+//                case common -> cCount++;
+//                case uncommon -> ucCount++;
+//                case rare -> rCount++;
+//                case epic -> eCount++;
+//                case legendary -> lCount++;
+//            }
+//
         }
 
         System.out.println("Common: "+cCount +" " +cCount/1000f*100+"%");
