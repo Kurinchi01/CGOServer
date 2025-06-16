@@ -16,6 +16,8 @@ public class Chapter {
     private String name; // z.B. "Kapitel 1: Der Goblinwald"
     @Getter
     private String description;
+    @Getter
+    private int monsterCount;
 
     // Ein Kapitel kann viele verschiedene Monster-Typen enthalten.
     // Ein Monster-Typ (z.B. Goblin) kann in vielen Kapiteln vorkommen.
@@ -31,6 +33,5 @@ public class Chapter {
     // Leerer Konstruktor für JPA
     public Chapter() {
     }
-
 
 }
