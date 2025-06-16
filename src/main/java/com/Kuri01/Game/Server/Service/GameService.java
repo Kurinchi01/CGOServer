@@ -1,20 +1,33 @@
 package com.Kuri01.Game.Server.Service;
 
 import com.Kuri01.Game.Server.Model.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class GameService {
 
+    private final ChapterRepository chapterRepository;
+    private final Random random = new Random();
+
+    @Autowired
+    public GameService(ChapterRepository chapterRepository) {
+        this.chapterRepository = chapterRepository;
+    }
+
     public RoundStartData createNewRound(Long chapterID) {
 
+        // 1. Lade das angeforderte Kapitel aus der Datenbank
         Chapter chapter = chapterRepository.findById(chapterID)
                 .orElseThrow(() -> new IllegalArgumentException("Kapitel nicht gefunden: " + chapterID));
+
+        // 2. Hole den Monster-Pool für dieses Kapitel
+        Set<Monster> monsterPool = chapter.getMonsters();
+        if (monsterPool.isEmpty()) {
+            throw new IllegalStateException("Keine Monster für Kapitel " + chapterID + " definiert!");
+        }
 
         // 1. Erstelle ein komplettes Kartendeck mit deiner Card-Klasse
         List<Card> deck = new ArrayList<>();

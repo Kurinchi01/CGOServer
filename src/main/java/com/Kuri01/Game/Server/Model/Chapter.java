@@ -25,6 +25,7 @@ public class Chapter {
             name = "chapter_monster_pool", // Name der Zwischentabelle
             joinColumns = @JoinColumn(name = "chapter_id"),
             inverseJoinColumns = @JoinColumn(name = "monster_id"))
+    @Getter
     private Set<Monster> monsters;
 
     // Leerer Konstruktor für JPA

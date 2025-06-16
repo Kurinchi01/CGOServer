@@ -6,7 +6,7 @@ import lombok.Setter;
 
 import java.util.Random;
 
-import static com.Kuri01.Game.Server.Model.Rarity.closest;
+
 
 @Entity
 public class Monster extends Character {
