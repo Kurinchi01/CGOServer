@@ -1,6 +1,11 @@
 package com.Kuri01.Game.Server.Service;
 
 import com.Kuri01.Game.Server.Model.*;
+import com.Kuri01.Game.Server.Model.Cards.Card;
+import com.Kuri01.Game.Server.Model.RPG.Chapter;
+import com.Kuri01.Game.Server.Model.RPG.ChapterRepository;
+import com.Kuri01.Game.Server.Model.RPG.Monster;
+import com.Kuri01.Game.Server.Model.RPG.Rarity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

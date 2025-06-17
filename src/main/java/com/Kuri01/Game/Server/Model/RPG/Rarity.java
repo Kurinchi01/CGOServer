@@ -1,4 +1,4 @@
-package com.Kuri01.Game.Server.Model;
+package com.Kuri01.Game.Server.Model.RPG;
 
 import lombok.Getter;
 import java.util.Arrays;

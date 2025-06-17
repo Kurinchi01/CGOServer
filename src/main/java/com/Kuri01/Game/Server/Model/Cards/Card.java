@@ -1,4 +1,4 @@
-package com.Kuri01.Game.Server.Model;
+package com.Kuri01.Game.Server.Model.Cards;
 
 public class Card {
     public enum Suit {

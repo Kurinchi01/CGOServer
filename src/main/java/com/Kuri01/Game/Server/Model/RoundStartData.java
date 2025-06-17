@@ -1,5 +1,7 @@
 package com.Kuri01.Game.Server.Model;
 
+import com.Kuri01.Game.Server.Model.Cards.Card;
+import com.Kuri01.Game.Server.Model.RPG.Monster;
 import lombok.Getter;
 import lombok.Setter;
 

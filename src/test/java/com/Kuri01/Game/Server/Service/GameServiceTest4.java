@@ -4,6 +4,10 @@ import com.Kuri01.Game.Server.Model.*;
 
 import static org.mockito.Mockito.when;
 
+import com.Kuri01.Game.Server.Model.RPG.Chapter;
+import com.Kuri01.Game.Server.Model.RPG.ChapterRepository;
+import com.Kuri01.Game.Server.Model.RPG.Monster;
+import com.Kuri01.Game.Server.Model.RPG.Rarity;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -68,4 +72,5 @@ class GameServiceTest4 {
         // Wurde der faceUp-Status korrekt gesetzt?
         assertTrue(result.getTopCard().isFaceUp(), "Die Ablagestapel-Karte sollte aufgedeckt sein.");
     }
+
 }

@@ -1,9 +1,8 @@
 package com.Kuri01.Game.Server.Model;
 
-import org.junit.jupiter.api.BeforeAll;
+import com.Kuri01.Game.Server.Model.RPG.Monster;
+import com.Kuri01.Game.Server.Model.RPG.Rarity;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class MonsterTest {
 

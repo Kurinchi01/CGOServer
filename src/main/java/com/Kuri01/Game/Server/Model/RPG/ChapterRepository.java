@@ -1,4 +1,4 @@
-package com.Kuri01.Game.Server.Model;
+package com.Kuri01.Game.Server.Model.RPG;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
