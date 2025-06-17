@@ -2,6 +2,7 @@ package com.Kuri01.Game.Server.Model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Set;
 
@@ -11,12 +12,16 @@ public class Chapter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
+    @Setter
     private Long id;
     @Getter
+    @Setter
     private String name; // z.B. "Kapitel 1: Der Goblinwald"
     @Getter
+    @Setter
     private String description;
     @Getter
+    @Setter
     private int monsterCount;
 
     // Ein Kapitel kann viele verschiedene Monster-Typen enthalten.
@@ -28,6 +33,7 @@ public class Chapter {
             joinColumns = @JoinColumn(name = "chapter_id"),
             inverseJoinColumns = @JoinColumn(name = "monster_id"))
     @Getter
+    @Setter
     private Set<Monster> monsters;
 
     // Leerer Konstruktor für JPA

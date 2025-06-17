@@ -78,62 +78,50 @@ public class GameService {
 
     /**
      * Wählt eine bestimmte Anzahl von Monstern aus dem gegebenen Pool aus.
-     * Diese Methode ist robust und berücksichtigt die Seltenheit der verfügbaren Monster.
-     *
-     * @param monsterPool Das Set an Monstern, das für dieses Kapitel zur Verfügung steht.
-     * @param monsterCount Die Anzahl der Monster, die für den Kampf ausgewählt werden sollen.
-     * @return Eine Liste der ausgewählten Monster.
+     * Diese Methode ist jetzt optimiert, um die Gruppierung nur einmal durchzuführen.
      */
     private List<Monster> selectMonstersFromPool(Set<Monster> monsterPool, int monsterCount) {
         if (monsterPool == null || monsterPool.isEmpty()) {
             throw new IllegalStateException("Der Monster-Pool darf nicht leer sein!");
         }
 
+        // OPTIMIERUNG: Gruppiere den Pool nur EINMAL am Anfang.
+        Map<Rarity, List<Monster>> monstersByRarity = monsterPool.stream()
+                .collect(Collectors.groupingBy(Monster::getRarity));
+
         List<Monster> selectedMonsters = new ArrayList<>();
         for (int i = 0; i < monsterCount; i++) {
-            // Für jedes zu wählende Monster rufen wir unsere gewichtete Auswahl-Logik auf.
-            // Diese Logik stellt sicher, dass nur aus den verfügbaren Monstern gewählt wird.
-            Monster chosenMonster = selectSingleWeightedMonster(monsterPool);
+            // Gib die bereits gruppierte Map an die Hilfsmethode weiter.
+            Monster chosenMonster = selectSingleWeightedMonster(monstersByRarity);
             selectedMonsters.add(chosenMonster);
         }
         return selectedMonsters;
     }
 
 
-    private Monster selectSingleWeightedMonster(Set<Monster> monsterPool) {
-        if (monsterPool == null || monsterPool.isEmpty()) {
-            throw new IllegalStateException("Der Monster-Pool darf nicht leer sein!");
-        }
-
-        // Schritt 1: Gruppiere die verfügbaren Monster nach Seltenheit. Das machen wir nur einmal.
-        Map<Rarity, List<Monster>> monstersByRarity = monsterPool.stream()
-                .collect(Collectors.groupingBy(Monster::getRarity));
+    private Monster selectSingleWeightedMonster(Map<Rarity, List<Monster>> monstersByRarity) {
+        // Schritt 1 entfällt, da die Map bereits übergeben wird.
 
         // Schritt 2: Würfle eine Ziel-Seltenheit.
         Rarity targetRarity = Rarity.getRandomRarity();
         Rarity currentRarity = targetRarity;
 
-        // Schritt 3: "Cascading Fallback" - Suche nach einem Monster.
-        // Wir versuchen es zuerst mit der gewürfelten Seltenheit und gehen dann immer
-        // eine Stufe runter (Richtung 'common'), bis wir ein verfügbares Monster finden.
+        // Schritt 3: "Cascading Fallback" - die Logik hier bleibt identisch.
         for (int i = 0; i < Rarity.values().length; i++) {
             List<Monster> availableMonsters = monstersByRarity.get(currentRarity);
-
-            // Haben wir Monster dieser Seltenheit im Pool?
             if (availableMonsters != null && !availableMonsters.isEmpty()) {
-                // Ja! Wähle ein zufälliges aus dieser Liste und gib es zurück.
                 return availableMonsters.get(random.nextInt(availableMonsters.size()));
             }
-
-            // Nein? Versuche es mit der nächst-häufigeren Stufe.
             currentRarity = currentRarity.getLessRare();
         }
 
-        // ABSOLUTER NOTFALL-FALLBACK:
-        // Wenn selbst nach dem Durchlaufen aller Seltenheiten nichts gefunden wurde
-        // (was nur passiert, wenn der Pool leer ist, was wir oben schon abfangen),
-        // gib einfach irgendein Monster aus dem ursprünglichen Pool zurück.
-        return monsterPool.stream().findAny().orElseThrow();
+        // Notfall-Fallback, falls die Map komplett leer sein sollte.
+        // Wir nehmen einen beliebigen Wert aus der Map und davon das erste Monster.
+        return monstersByRarity.values().stream()
+                .filter(list -> !list.isEmpty())
+                .findFirst()
+                .flatMap(list -> list.stream().findAny())
+                .orElseThrow(() -> new IllegalStateException("Konnte kein Monster aus der Map auswählen."));
     }
 
 
