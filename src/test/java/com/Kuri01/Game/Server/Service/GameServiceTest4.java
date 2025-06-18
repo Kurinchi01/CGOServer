@@ -4,8 +4,8 @@ import com.Kuri01.Game.Server.Model.*;
 
 import static org.mockito.Mockito.when;
 
-import com.Kuri01.Game.Server.Model.Cards.Card;
 import com.Kuri01.Game.Server.Model.RPG.*;
+import com.Kuri01.Game.Server.Model.RPG.ItemSystem.LootResult;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

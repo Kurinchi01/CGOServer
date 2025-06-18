@@ -1,5 +1,6 @@
-package com.Kuri01.Game.Server.Model.RPG;
+package com.Kuri01.Game.Server.Model.RPG.ItemSystem;
 
+import com.Kuri01.Game.Server.Model.RPG.Player;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 

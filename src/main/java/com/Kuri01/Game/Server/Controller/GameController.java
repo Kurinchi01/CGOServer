@@ -1,6 +1,6 @@
 package com.Kuri01.Game.Server.Controller;
 
-import com.Kuri01.Game.Server.Model.RPG.LootResult;
+import com.Kuri01.Game.Server.Model.RPG.ItemSystem.LootResult;
 import com.Kuri01.Game.Server.Model.RoundEndRequest;
 import com.Kuri01.Game.Server.Model.RoundStartData;
 import com.Kuri01.Game.Server.Service.GameService;

@@ -1,5 +1,6 @@
 package com.Kuri01.Game.Server.Model.RPG;
 
+import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Inventory;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

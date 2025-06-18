@@ -1,4 +1,4 @@
-package com.Kuri01.Game.Server.Model.RPG;
+package com.Kuri01.Game.Server.Model.RPG.ItemSystem;
 
 import jakarta.persistence.*;
 import lombok.Getter;
