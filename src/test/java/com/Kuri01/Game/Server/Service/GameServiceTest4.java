@@ -4,17 +4,14 @@ import com.Kuri01.Game.Server.Model.*;
 
 import static org.mockito.Mockito.when;
 
-import com.Kuri01.Game.Server.Model.RPG.Chapter;
-import com.Kuri01.Game.Server.Model.RPG.ChapterRepository;
-import com.Kuri01.Game.Server.Model.RPG.Monster;
-import com.Kuri01.Game.Server.Model.RPG.Rarity;
+import com.Kuri01.Game.Server.Model.Cards.Card;
+import com.Kuri01.Game.Server.Model.RPG.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -73,4 +70,50 @@ class GameServiceTest4 {
         assertTrue(result.getTopCard().isFaceUp(), "Die Ablagestapel-Karte sollte aufgedeckt sein.");
     }
 
+
+    @Test
+    void processRoundEnd_whenOutcomeIsWin_shouldReturnLootResultAndEndRound() {
+        // ========== 1. Arrange (Vorbereiten) ==========
+
+        // Schritt A: Wir müssen zuerst eine Runde starten, um eine gültige roundId zu haben.
+        // Die Einrichtung des Mocks ist dieselbe wie in unserem vorherigen Test.
+        Monster testMonster = new Monster("Test Goblin", 50f, 10f, Rarity.common);
+        Chapter mockChapter = new Chapter();
+        mockChapter.setId(1L);
+        mockChapter.setMonsterCount(1);
+        mockChapter.setMonsters(Set.of(testMonster));
+        when(chapterRepository.findById(1L)).thenReturn(Optional.of(mockChapter));
+
+        // Starte die Runde, um den internen Zustand im Service zu erzeugen.
+        RoundStartData startedRound = gameService.createNewRound(1L);
+        String roundId = startedRound.getRoundId();
+
+        // Schritt B: Erstelle die Anfrage, die der Client senden würde.
+        // Da unsere validateMoves()-Methode aktuell immer 'true' zurückgibt,
+        // ist der Inhalt von movesLog für diesen Test noch nicht entscheidend.
+        RoundEndRequest winRequest = new RoundEndRequest(
+                RoundOutcome.WIN,
+                Collections.emptyList(), // Leere Liste als Platzhalter
+                120.0 // 120 Sekunden
+        );
+
+        // ========== 2. Act (Ausführen) ==========
+
+        // Rufe die Methode auf, die wir testen wollen.
+        LootResult lootResult = gameService.processRoundEnd(roundId, winRequest);
+
+
+        // ========== 3. Assert (Überprüfen) ==========
+
+        // Überprüfe, ob wir eine Belohnung erhalten haben.
+        assertNotNull(lootResult, "Bei einem Sieg sollte ein LootResult zurückgegeben werden.");
+        assertTrue(lootResult.message().contains("Truhe erhalten"), "Die Loot-Nachricht sollte korrekt sein.");
+
+        // SEHR WICHTIG: Überprüfe, ob die Runde aus dem Speicher entfernt wurde.
+        assertNull(gameService.getActiveRoundData(roundId), "Die beendete Runde sollte aus den aktiven Runden entfernt werden.");
+    }
+
+    @Test
+    void validateMoves_withRoundOutComeLOSS() {
+    }
 }
