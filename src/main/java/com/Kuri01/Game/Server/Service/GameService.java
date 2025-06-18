@@ -4,6 +4,7 @@ import com.Kuri01.Game.Server.Model.*;
 import com.Kuri01.Game.Server.Model.Cards.Card;
 import com.Kuri01.Game.Server.Model.Cards.Move;
 import com.Kuri01.Game.Server.Model.RPG.*;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
+@Getter
 public class GameService {
 
     private final ChapterRepository chapterRepository;
@@ -155,7 +157,7 @@ public class GameService {
         activeRounds.remove(roundId);
     }
 
-    public LootResult processRoundEnd(String roundId, RoundEndRequest request) {
+    public LootResult processRoundEnd(Long playerId,String roundId, RoundEndRequest request) {
         // Schritt 1: Hole den gespeicherten Startzustand der Runde.
         RoundStartData originalRound = activeRounds.get(roundId);
         if (originalRound == null) {

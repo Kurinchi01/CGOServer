@@ -110,10 +110,41 @@ class GameServiceTest4 {
         assertTrue(lootResult.message().contains("Truhe erhalten"), "Die Loot-Nachricht sollte korrekt sein.");
 
         // SEHR WICHTIG: Überprüfe, ob die Runde aus dem Speicher entfernt wurde.
-        assertNull(gameService.getActiveRoundData(roundId), "Die beendete Runde sollte aus den aktiven Runden entfernt werden.");
+        assertNull(gameService.getActiveRounds().get(roundId), "Die beendete Runde sollte aus den aktiven Runden entfernt werden.");
     }
 
     @Test
-    void validateMoves_withRoundOutComeLOSS() {
+    void processRoundEnd_whenOutcomeIsLoss_shouldReturnNullAndEndRound() {
+        // ========== 1. Arrange (Vorbereiten) ==========
+
+        // Schritt A: Starte wieder eine Runde, um eine gültige roundId zu bekommen.
+        Monster testMonster = new Monster("Test Goblin", 50f, 10f, Rarity.common);
+        Chapter mockChapter = new Chapter();
+        mockChapter.setId(1L);
+        mockChapter.setMonsterCount(1);
+        mockChapter.setMonsters(Set.of(testMonster));
+        when(chapterRepository.findById(1L)).thenReturn(Optional.of(mockChapter));
+        RoundStartData startedRound = gameService.createNewRound(1L);
+        String roundId = startedRound.getRoundId();
+
+        // Schritt B: Erstelle die Anfrage für eine Niederlage.
+        RoundEndRequest lossRequest = new RoundEndRequest(
+                RoundOutcome.LOSS,
+                Collections.emptyList(),
+                180.0
+        );
+
+        // ========== 2. Act (Ausführen) ==========
+
+        LootResult lootResult = gameService.processRoundEnd(roundId, lossRequest);
+
+
+        // ========== 3. Assert (Überprüfen) ==========
+
+        // Überprüfe, dass es KEINE Belohnung gab.
+        assertNull(lootResult, "Bei einer Niederlage sollte das LootResult null sein.");
+
+        // Überprüfe auch hier, dass die Runde aufgeräumt wurde.
+        assertNull(gameService.getActiveRounds().get(roundId), "Die beendete Runde sollte auch bei einer Niederlage entfernt werden.");
     }
 }
