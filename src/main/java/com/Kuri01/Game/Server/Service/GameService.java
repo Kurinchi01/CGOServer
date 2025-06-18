@@ -5,6 +5,7 @@ import com.Kuri01.Game.Server.Model.Cards.Card;
 import com.Kuri01.Game.Server.Model.Cards.Move;
 import com.Kuri01.Game.Server.Model.RPG.*;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.LootResult;
+import com.Kuri01.Game.Server.Model.RPG.Repository.ChapterRepository;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
