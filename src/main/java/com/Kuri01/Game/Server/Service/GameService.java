@@ -4,8 +4,12 @@ import com.Kuri01.Game.Server.Model.*;
 import com.Kuri01.Game.Server.Model.Cards.Card;
 import com.Kuri01.Game.Server.Model.Cards.Move;
 import com.Kuri01.Game.Server.Model.RPG.*;
+import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Item;
+import com.Kuri01.Game.Server.Model.RPG.ItemSystem.LootChest;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.LootResult;
+import com.Kuri01.Game.Server.Model.RPG.ItemSystem.LootTableEntry;
 import com.Kuri01.Game.Server.Model.RPG.Repository.ChapterRepository;
+import com.Kuri01.Game.Server.Model.RPG.Repository.LootChestRepository;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,13 +23,15 @@ import java.util.stream.Collectors;
 public class GameService {
 
     private final ChapterRepository chapterRepository;
+    private final LootChestRepository lootChestRepository;
     private final Random random = new Random();
 
     private final Map<String, RoundStartData> activeRounds = new ConcurrentHashMap<>();
 
     @Autowired
-    public GameService(ChapterRepository chapterRepository) {
+    public GameService(ChapterRepository chapterRepository, LootChestRepository lootChestRepository) {
         this.chapterRepository = chapterRepository;
+        this.lootChestRepository = lootChestRepository;
     }
 
     /**
@@ -153,13 +159,14 @@ public class GameService {
 
     /**
      * Beendet eine Runde und entfernt sie aus dem aktiven Speicher.
+     *
      * @param roundId die ID der zu beendenden Runde.
      */
     public void endRound(String roundId) {
         activeRounds.remove(roundId);
     }
 
-    public LootResult processRoundEnd(Long playerId, String roundId, RoundEndRequest request) {
+    public List<Item> processRoundEnd(Long playerId, String roundId, RoundEndRequest request) {
         // Schritt 1: Hole den gespeicherten Startzustand der Runde.
         RoundStartData originalRound = activeRounds.get(roundId);
         if (originalRound == null) {
@@ -175,15 +182,35 @@ public class GameService {
 
         LootResult lootResult = null;
         if (request.outcome() == RoundOutcome.WIN && isValidWin) {
-            // Schritt 3: Wenn der Spieler gewonnen hat, berechne den Loot.
-            lootResult = calculateLoot(originalRound.getMonster().get(0)); // Annahme: nur ein Monster
+            // Lade den Spieler (PlayerRepository wird benötigt)
+            //Player player = playerRepository.findById(playerId).orElseThrow(...);
+
+            // Hole die Liste der Monster aus der Original-Runde
+            List<Monster> monsters = originalRound.getMonster();
+            List<Item> rewardedChests = new ArrayList<>();
+
+            // Gehe durch jedes Monster und generiere eine passende Truhe
+            for (Monster monster : monsters) {
+                // Finde die Truhe, die der Seltenheit des Monsters entspricht
+                Optional<LootChest> chestOpt = lootChestRepository.findByRarity(monster.getRarity()); // (Methode muss im Repo definiert werden)
+
+                if (chestOpt.isPresent()) {
+                    LootChest chest = chestOpt.get();
+                    rewardedChests.add(chest);
+                    // TODO: Füge die Truhe dem Inventar des Spielers hinzu
+                    // player.getInventory().addItem(chest);
+                }
+            }
+
+            // TODO: Speichere die Änderungen am Spieler
+            // playerRepository.save(player);
+
+            endRound(roundId); // Räume die aktive Runde auf
+            return rewardedChests;
         }
 
-        // Schritt 4: Räume die beendete Runde aus dem Speicher auf.
         endRound(roundId);
-
-        // Schritt 5: Gib das Ergebnis (den Loot oder null) zurück.
-        return lootResult;
+        return Collections.emptyList(); // Leere Liste bei Niederlage
     }
 
 
@@ -248,5 +275,34 @@ public class GameService {
         return true; // Fürs Erste geben wir bei erfolgreicher Schleife true zurück
     }
 
+    public List<Item> openChest(Long playerId, Long inventoryChestId) {
+        // TODO: 1. Prüfe, ob der Spieler die Truhe mit der ID `inventoryChestId` in seinem Inventar hat.
+        // Player player = playerRepository.findById(playerId).orElseThrow(...);
+        // InventorySlot chestSlot = player.getInventory().findSlotById(inventoryChestId).orElseThrow(...);
+        // LootChest chestToOpen = (LootChest) chestSlot.getItem();
 
+        LootChest chestToOpen = new LootChest(); // Platzhalter
+        Set<LootTableEntry> lootTable = chestToOpen.getLootTable();
+        List<Item> finalLoot = new ArrayList<>();
+
+        // 2. Würfle für jeden möglichen Inhalt der Truhe
+        for (LootTableEntry entry : lootTable) {
+            if (random.nextDouble() < entry.getDropChance()) {
+                // Drop war erfolgreich!
+                // TODO: Berücksichtige min/max Quantity
+                finalLoot.add(entry.getItem());
+            }
+        }
+
+        // 3. Entferne die Truhe aus dem Inventar des Spielers
+        // player.getInventory().removeItem(inventoryChestId);
+
+        // 4. Füge die neuen Items dem Inventar des Spielers hinzu
+        // finalLoot.forEach(item -> player.getInventory().addItem(item));
+
+        // 5. Speichere die Änderungen
+        // playerRepository.save(player);
+
+        return finalLoot;
+    }
 }

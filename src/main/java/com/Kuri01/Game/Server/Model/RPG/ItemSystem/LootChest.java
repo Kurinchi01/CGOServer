@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Entity
 @DiscriminatorValue("CHEST") // Wert für die 'item_type'-Spalte in der Item-Tabelle
 @Getter

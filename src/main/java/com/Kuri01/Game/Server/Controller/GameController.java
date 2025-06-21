@@ -1,5 +1,6 @@
 package com.Kuri01.Game.Server.Controller;
 
+import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Item;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.LootResult;
 import com.Kuri01.Game.Server.Model.RoundEndRequest;
 import com.Kuri01.Game.Server.Model.RoundStartData;
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * REST-Controller, der alle API-Endpunkte für die Kern-Spielmechanik (Runden) verwaltet.
@@ -57,21 +60,18 @@ public class GameController {
     /**
      * Endpunkt zum Beenden einer Spielrunde.
      * Reagiert auf POST-Anfragen an z.B. /api/rounds/abc-123-def-456/end
-     * @param roundId Die einzigartige ID der Runde, die aus dem URL-Pfad gelesen wird.
-     * @param request Der Request-Body, der das Ergebnis der Runde (Sieg/Niederlage) enthält.
-     * @return Ein ResponseEntity, das im Falle eines Sieges den Loot enthält.
-     * Bei einer Niederlage oder einem Fehler wird eine entsprechende Antwort gesendet.
+     * @param roundId Die einzigartige ID der Runde.
+     * @param request Der Request-Body, der das Ergebnis der Runde enthält.
+     * @return Ein ResponseEntity, das im Falle eines Sieges eine Liste der erhaltenen Truhen (als Items) enthält.
      */
     @PostMapping("/{roundId}/end")
     public ResponseEntity<?> endRound(@PathVariable String roundId, @RequestBody RoundEndRequest request) {
         try {
-            LootResult loot = gameService.processRoundEnd(roundId, request);
-            // ResponseEntity.ok() kann auch einen leeren Body (null) verarbeiten,
-            // was bei einer Niederlage (loss) der Fall ist. Der Client erhält dann 200 OK.
-            return ResponseEntity.ok(loot);
+            // TODO: Spieler-ID aus der Authentifizierung holen
+            Long playerId = 1L; // Platzhalter
+            List<Item> rewardedChests = gameService.processRoundEnd(playerId, roundId, request);
+            return ResponseEntity.ok(rewardedChests);
         } catch (IllegalArgumentException e) {
-            // Dieser Fehler wird geworfen, wenn die roundId ungültig ist.
-            // HTTP 400 Bad Request ist hier passend.
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }

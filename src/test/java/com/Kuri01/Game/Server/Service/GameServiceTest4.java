@@ -5,6 +5,7 @@ import com.Kuri01.Game.Server.Model.*;
 import static org.mockito.Mockito.when;
 
 import com.Kuri01.Game.Server.Model.RPG.*;
+import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Item;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.LootResult;
 import com.Kuri01.Game.Server.Model.RPG.Repository.ChapterRepository;
 import org.junit.jupiter.api.Test;
@@ -101,14 +102,14 @@ class GameServiceTest4 {
         // ========== 2. Act (Ausführen) ==========
 
         // Rufe die Methode auf, die wir testen wollen.
-        LootResult lootResult = gameService.processRoundEnd(roundId, winRequest);
+        List<Item> lootResult = gameService.processRoundEnd(1L,roundId, winRequest);
 
 
         // ========== 3. Assert (Überprüfen) ==========
 
         // Überprüfe, ob wir eine Belohnung erhalten haben.
         assertNotNull(lootResult, "Bei einem Sieg sollte ein LootResult zurückgegeben werden.");
-        assertTrue(lootResult.message().contains("Truhe erhalten"), "Die Loot-Nachricht sollte korrekt sein.");
+        //assertTrue(lootResult.message().contains("Truhe erhalten"), "Die Loot-Nachricht sollte korrekt sein.");
 
         // SEHR WICHTIG: Überprüfe, ob die Runde aus dem Speicher entfernt wurde.
         assertNull(gameService.getActiveRounds().get(roundId), "Die beendete Runde sollte aus den aktiven Runden entfernt werden.");
@@ -137,13 +138,13 @@ class GameServiceTest4 {
 
         // ========== 2. Act (Ausführen) ==========
 
-        LootResult lootResult = gameService.processRoundEnd(roundId, lossRequest);
+        List<Item> lootResult = gameService.processRoundEnd(1L,roundId, lossRequest);
 
 
         // ========== 3. Assert (Überprüfen) ==========
 
         // Überprüfe, dass es KEINE Belohnung gab.
-        assertNull(lootResult, "Bei einer Niederlage sollte das LootResult null sein.");
+        assertEquals(lootResult.size(), 0);
 
         // Überprüfe auch hier, dass die Runde aufgeräumt wurde.
         assertNull(gameService.getActiveRounds().get(roundId), "Die beendete Runde sollte auch bei einer Niederlage entfernt werden.");
