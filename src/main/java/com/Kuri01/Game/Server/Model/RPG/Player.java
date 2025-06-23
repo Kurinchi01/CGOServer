@@ -1,5 +1,6 @@
 package com.Kuri01.Game.Server.Model.RPG;
 
+import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Equipment;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Inventory;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -12,6 +13,10 @@ public class Player extends Character {
 
     @Column(unique = true, nullable = false)
     private String googleId; // Eindeutige ID vom Google Play Login
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "equipment_id", referencedColumnName = "id")
+    private Equipment equipment;
 
     private int experiencePoints;
     private int level;
@@ -26,5 +31,6 @@ public class Player extends Character {
     public Player() {
         // Beim Erstellen eines neuen Spielers, erstellen wir auch direkt ein leeres Inventar.
         this.inventory = new Inventory(this);
+        this.equipment = new Equipment();
     }
 }

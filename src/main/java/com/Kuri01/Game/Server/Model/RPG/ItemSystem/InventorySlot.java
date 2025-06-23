@@ -17,9 +17,9 @@ public class InventorySlot {
     private Inventory inventory;
 
     // Ein Slot kann ein Item enthalten (oder null sein).
-    // TODO: Hier würdest du eine Verknüpfung zu deiner Item-Entity einfügen.
-    // @ManyToOne
-    // private Item item;
+    @ManyToOne
+    @Getter
+    private Item item;
 
     private int quantity;
 

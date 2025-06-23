@@ -3,6 +3,7 @@ package com.Kuri01.Game.Server.Model.RPG.ItemSystem;
 import com.Kuri01.Game.Server.Model.RPG.Player;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class Inventory {
     private Player player;
 
     // Ein Inventar hat viele Slots.
+    @Getter
     @OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<InventorySlot> slots = new ArrayList<>();
 
@@ -32,5 +34,26 @@ public class Inventory {
         }
     }
 
+
+    public void addItem(EquipmentItem newItem) {
+        int index = hasSpace();
+        if (index!=-1)
+        {
+            slots.get(index).setItem(newItem);
+        }
+        throw new IllegalStateException("Das Inventar ist voll!");
+    }
+
+    private int hasSpace()
+    {
+        for(int i=0;i< slots.size();i++)
+        {
+            if (slots.get(i).getItem()==null)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
 }
 
