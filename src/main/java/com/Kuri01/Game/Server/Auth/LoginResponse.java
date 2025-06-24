@@ -1,4 +1,3 @@
 package com.Kuri01.Game.Server.Auth;
 
-public record LoginResponse() {
-}
+public record LoginResponse(String jwtToken) {}
