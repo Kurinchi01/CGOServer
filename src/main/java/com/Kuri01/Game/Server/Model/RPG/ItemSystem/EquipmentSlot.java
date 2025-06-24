@@ -15,9 +15,6 @@ public enum EquipmentSlot {
     @Getter
     private final String displayName;
 
-    @Getter
-    @Setter
-    private InventorySlot slot;
 
     EquipmentSlot(String displayName) {
         this.displayName = displayName;
