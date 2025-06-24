@@ -24,7 +24,8 @@ public class Inventory {
     @OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<InventorySlot> slots = new ArrayList<>();
 
-    public Inventory() {}
+    public Inventory() {
+    }
 
     public Inventory(Player player) {
         this.player = player;
@@ -35,21 +36,20 @@ public class Inventory {
     }
 
 
-    public void addItem(EquipmentItem newItem) {
-        int index = hasSpace();
-        if (index!=-1)
-        {
+    public boolean addItem(EquipmentItem newItem) {
+        int index = findFirstEmptySlotIndex();
+        if (index != -1) {
             slots.get(index).setItem(newItem);
+            return true;
+        } else {
+            System.out.println("Inventar ist voll. Item konnte nicht hinzugefügt werden.");
+            return false;
         }
-        throw new IllegalStateException("Das Inventar ist voll!");
     }
 
-    private int hasSpace()
-    {
-        for(int i=0;i< slots.size();i++)
-        {
-            if (slots.get(i).getItem()==null)
-            {
+    private int findFirstEmptySlotIndex() {
+        for (int i = 0; i < slots.size(); i++) {
+            if (slots.get(i).getItem() == null) {
                 return i;
             }
         }
