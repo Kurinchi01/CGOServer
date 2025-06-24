@@ -44,10 +44,10 @@ INSERT INTO character (id, name, max_hp, attack, character_type, rarity,charge_r
 
 -- Hier fügen wir eine 'Player'-Instanz in die 'character'-Tabelle ein.
 -- Der 'character_type' ist 'PLAYER' und es gibt zusätzliche, spieler-spezifische Spalten.
-INSERT INTO equipment (id) VALUES (1);
-INSERT INTO inventory (id) VALUES (1);
-INSERT INTO character (id, name, max_hp, attack, character_type, google_id, level, experience_points, equipment_id, inventory_id) VALUES
-(1, 'Kuri01', 100, 10, 'PLAYER', 'google-id-12345', 1, 0, 1, 1);
+--INSERT INTO equipment (id) VALUES (1);
+--INSERT INTO inventory (id) VALUES (1);
+--INSERT INTO character (id, name, max_hp, attack, character_type, google_id, level, experience_points, equipment_id, inventory_id) VALUES
+--(1, 'Kuri01', 100, 10, 'PLAYER', 'google-id-12345', 1, 0, 1, 1);
 
 
 -- ====================================================================================

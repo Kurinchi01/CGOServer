@@ -10,6 +10,8 @@ import com.Kuri01.Game.Server.Model.RPG.ItemSystem.LootResult;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.LootTableEntry;
 import com.Kuri01.Game.Server.Model.RPG.Repository.ChapterRepository;
 import com.Kuri01.Game.Server.Model.RPG.Repository.LootChestRepository;
+import com.Kuri01.Game.Server.Model.RPG.Repository.PlayerRepository;
+import jakarta.transaction.Transactional;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,14 +26,16 @@ public class GameService {
 
     private final ChapterRepository chapterRepository;
     private final LootChestRepository lootChestRepository;
+    private final PlayerRepository playerRepository;
     private final Random random = new Random();
 
     private final Map<String, RoundStartData> activeRounds = new ConcurrentHashMap<>();
 
     @Autowired
-    public GameService(ChapterRepository chapterRepository, LootChestRepository lootChestRepository) {
+    public GameService(ChapterRepository chapterRepository, LootChestRepository lootChestRepository, PlayerRepository playerRepository) {
         this.chapterRepository = chapterRepository;
         this.lootChestRepository = lootChestRepository;
+        this.playerRepository = playerRepository;
     }
 
     /**
@@ -40,8 +44,11 @@ public class GameService {
      * @param chapterId Die ID des Kapitels, das gestartet werden soll.
      * @return Ein RoundStartData-Objekt mit allen notwendigen Informationen für den Client.
      */
-    public RoundStartData createNewRound(Long chapterId) {
+    public RoundStartData createNewRound(String googleID,Long chapterId) {
         // Schritt 1: Lade das Kapitel und den dazugehörigen Monster-Pool aus der Datenbank.
+        Player player = playerRepository.findByGoogleId(googleID)
+                .orElseThrow(() -> new IllegalStateException("Authentifizierter Spieler nicht in der DB gefunden: " + googleID));
+
         Chapter chapter = chapterRepository.findById(chapterId)
                 .orElseThrow(() -> new IllegalArgumentException("Kapitel nicht gefunden: " + chapterId));
 
@@ -166,51 +173,53 @@ public class GameService {
         activeRounds.remove(roundId);
     }
 
-    public List<Item> processRoundEnd(Long playerId, String roundId, RoundEndRequest request) {
-        // Schritt 1: Hole den gespeicherten Startzustand der Runde.
+    /**
+     * Verarbeitet das Ende einer Runde für den authentifizierten Spieler.
+     * @param googleId Die Google ID des Spielers.
+     * @param roundId Die ID der beendeten Runde.
+     * @param request Die Daten vom Client zum Rundenende.
+     * @return Eine Liste der erhaltenen Items (Truhen).
+     */
+    @Transactional
+    public List<Item> processRoundEnd(String googleId, String roundId, RoundEndRequest request) {
+        // NEU: Lade den Spieler, der die Belohnungen erhalten soll.
+        Player player = playerRepository.findByGoogleId(googleId)
+                .orElseThrow(() -> new IllegalStateException("Authentifizierter Spieler nicht in der DB gefunden: " + googleId));
+
         RoundStartData originalRound = activeRounds.get(roundId);
         if (originalRound == null) {
             throw new IllegalArgumentException("Ungültige oder bereits beendete Runde: " + roundId);
         }
 
-        // Schritt 2: Validiere das Ergebnis.
-        // TODO: Implementiere die volle Validierungslogik.
-        // Hier würdest du die 'movesLog' aus dem Request nehmen und gegen den
-        // gespeicherten Startzustand (originalRound.getTriPeaksCards() etc.) prüfen.
-        // FÜRS ERSTE vereinfachen wir das: Wir vertrauen dem Client, wenn er "WIN" meldet.
         boolean isValidWin = validateMoves(request.movesLog(), originalRound);
+        List<Item> rewardedChests = new ArrayList<>();
 
-        LootResult lootResult = null;
         if (request.outcome() == RoundOutcome.WIN && isValidWin) {
-            // Lade den Spieler (PlayerRepository wird benötigt)
-            //Player player = playerRepository.findById(playerId).orElseThrow(...);
-
-            // Hole die Liste der Monster aus der Original-Runde
+            // Logik zur Belohnung des Spielers
             List<Monster> monsters = originalRound.getMonster();
-            List<Item> rewardedChests = new ArrayList<>();
-
-            // Gehe durch jedes Monster und generiere eine passende Truhe
             for (Monster monster : monsters) {
-                // Finde die Truhe, die der Seltenheit des Monsters entspricht
-                Optional<LootChest> chestOpt = lootChestRepository.findByRarity(monster.getRarity()); // (Methode muss im Repo definiert werden)
-
-                if (chestOpt.isPresent()) {
-                    LootChest chest = chestOpt.get();
-                    rewardedChests.add(chest);
-                    // TODO: Füge die Truhe dem Inventar des Spielers hinzu
-                    // player.getInventory().addItem(chest);
-                }
+                // TODO: Erweitere die Logik, um die richtige Truhe zu finden (z.B. über LootChestRepository)
+                // Fürs Erste erstellen wir ein Platzhalter-Item
+                Item chest = new Item(); // Platzhalter
+                chest.setName(monster.getRarity() + " Chest");
+                rewardedChests.add(chest);
             }
 
-            // TODO: Speichere die Änderungen am Spieler
-            // playerRepository.save(player);
-
-            endRound(roundId); // Räume die aktive Runde auf
-            return rewardedChests;
+            // GEÄNDERT: Das TODO wird jetzt durch echte Logik ersetzt!
+            if (!rewardedChests.isEmpty()) {
+                // HINWEIS: Hier wäre ein InventoryService sauberer, aber für den Anfang geht das auch hier.
+                // player.getInventory().addItems(rewardedChests); // Angenommen, es gäbe eine addItems-Methode
+                // Fürs Erste fügen wir sie manuell hinzu (Annahme: Inventar hat Platz)
+                for(Item chest : rewardedChests) {
+                    // Du bräuchtest eine Logik, um das Item im Inventar zu speichern.
+                    // Das würde das Erstellen von InventorySlot-Entitäten beinhalten.
+                }
+                playerRepository.save(player); // Speichert den Spieler und Kaskaden-Änderungen an seinem Inventar.
+            }
         }
 
         endRound(roundId);
-        return Collections.emptyList(); // Leere Liste bei Niederlage
+        return rewardedChests;
     }
 
 

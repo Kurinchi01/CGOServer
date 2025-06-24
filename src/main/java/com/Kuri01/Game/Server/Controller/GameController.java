@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class GameController {
     /**
      * Konstruktor-basierte Dependency Injection. Dies ist der empfohlene Weg,
      * um Abhängigkeiten in Spring zu injizieren.
+     *
      * @param gameService Der GameService wird vom Spring-Kontext automatisch bereitgestellt.
      */
     @Autowired
@@ -35,15 +37,17 @@ public class GameController {
     /**
      * Endpunkt zum Starten einer neuen Spielrunde für ein bestimmtes Kapitel.
      * Reagiert auf POST-Anfragen an z.B. /api/rounds/start/1
+     *
      * @param chapterId Die ID des Kapitels, die aus dem URL-Pfad gelesen wird.
      * @return Ein ResponseEntity, das im Erfolgsfall die Startdaten der Runde (RoundStartData)
      * und den HTTP-Status 200 (OK) enthält. Bei Fehlern werden entsprechende
      * HTTP-Fehlercodes zurückgegeben.
      */
     @PostMapping("/start/{chapterId}")
-    public ResponseEntity<RoundStartData> startNewRound(@PathVariable Long chapterId) {
+    public ResponseEntity<RoundStartData> startNewRound(@PathVariable Long chapterId, Authentication authentication) {
+        String googleId = authentication.getName();
         try {
-            RoundStartData roundData = gameService.createNewRound(chapterId);
+            RoundStartData roundData = gameService.createNewRound(googleId, chapterId);
 
             return ResponseEntity.ok(roundData);
         } catch (IllegalArgumentException e) {
@@ -60,17 +64,24 @@ public class GameController {
     /**
      * Endpunkt zum Beenden einer Spielrunde.
      * Reagiert auf POST-Anfragen an z.B. /api/rounds/abc-123-def-456/end
+     *
      * @param roundId Die einzigartige ID der Runde.
      * @param request Der Request-Body, der das Ergebnis der Runde enthält.
      * @return Ein ResponseEntity, das im Falle eines Sieges eine Liste der erhaltenen Truhen (als Items) enthält.
      */
     @PostMapping("/{roundId}/end")
-    public ResponseEntity<?> endRound(@PathVariable String roundId, @RequestBody RoundEndRequest request) {
+    public ResponseEntity<?> endRound(@PathVariable String roundId, @RequestBody RoundEndRequest request, Authentication authentication) {
         try {
-            // TODO: Spieler-ID aus der Authentifizierung holen
-            Long playerId = 1L; // Platzhalter
-            List<Item> rewardedChests = gameService.processRoundEnd(playerId, roundId, request);
+
+            // authentication.getName() gibt den "Benutzernamen" zurück, den wir im UserDetailsService
+            // als die eindeutige Google ID des Spielers festgelegt haben.
+            String googleId = authentication.getName();
+
+            // GEÄNDERT: Übergebe die echte googleId an den Service.
+            List<Item> rewardedChests = gameService.processRoundEnd(googleId, roundId, request);
+
             return ResponseEntity.ok(rewardedChests);
+
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

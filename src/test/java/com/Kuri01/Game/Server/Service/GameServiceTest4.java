@@ -50,7 +50,7 @@ class GameServiceTest4 {
         // ========== 2. Act (Ausführen) ==========
 
         // Rufe die Methode auf, die wir testen wollen.
-        RoundStartData result = gameService.createNewRound(1L);
+        RoundStartData result = gameService.createNewRound("test",1L);
 
 
         // ========== 3. Assert (Überprüfen) ==========
@@ -87,7 +87,7 @@ class GameServiceTest4 {
         when(chapterRepository.findById(1L)).thenReturn(Optional.of(mockChapter));
 
         // Starte die Runde, um den internen Zustand im Service zu erzeugen.
-        RoundStartData startedRound = gameService.createNewRound(1L);
+        RoundStartData startedRound = gameService.createNewRound("test",1L);
         String roundId = startedRound.getRoundId();
 
         // Schritt B: Erstelle die Anfrage, die der Client senden würde.
@@ -126,7 +126,7 @@ class GameServiceTest4 {
         mockChapter.setMonsterCount(1);
         mockChapter.setMonsters(Set.of(testMonster));
         when(chapterRepository.findById(1L)).thenReturn(Optional.of(mockChapter));
-        RoundStartData startedRound = gameService.createNewRound(1L);
+        RoundStartData startedRound = gameService.createNewRound("test",1L);
         String roundId = startedRound.getRoundId();
 
         // Schritt B: Erstelle die Anfrage für eine Niederlage.
