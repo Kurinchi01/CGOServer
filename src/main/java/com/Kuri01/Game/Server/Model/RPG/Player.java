@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class Player extends Character {
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String googleId; // Eindeutige ID vom Google Play Login
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)

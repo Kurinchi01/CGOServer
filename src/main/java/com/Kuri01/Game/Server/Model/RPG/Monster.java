@@ -6,11 +6,12 @@ import lombok.Setter;
 
 
 @Entity
+@Setter
+@Getter
 public class Monster extends Character {
 
-    @Setter
-    @Getter
-    @Enumerated
+
+    @Enumerated(EnumType.STRING)
     private Rarity rarity;
 
     

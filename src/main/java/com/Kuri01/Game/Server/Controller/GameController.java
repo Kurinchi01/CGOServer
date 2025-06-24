@@ -44,6 +44,7 @@ public class GameController {
     public ResponseEntity<RoundStartData> startNewRound(@PathVariable Long chapterId) {
         try {
             RoundStartData roundData = gameService.createNewRound(chapterId);
+
             return ResponseEntity.ok(roundData);
         } catch (IllegalArgumentException e) {
             // Dieser Fehler wird geworfen, wenn die chapterId ungültig ist.

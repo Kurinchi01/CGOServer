@@ -24,7 +24,6 @@ public class EquipmentItem extends Item {
      * in der Datenbank gespeichert wird, was lesbarer ist als der numerische Index.
      */
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private EquipmentSlot equipmentSlot;
 
     /**
