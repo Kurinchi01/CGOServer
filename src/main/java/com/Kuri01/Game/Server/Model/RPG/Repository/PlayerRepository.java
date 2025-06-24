@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface PlayerRepository extends JpaRepository<Player, Long> {
     Optional<Player> findByGoogleId(String s);
+
+    Optional<Player> findByName(String username);
 }
