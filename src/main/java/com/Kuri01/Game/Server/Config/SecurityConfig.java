@@ -41,7 +41,7 @@ public class SecurityConfig {
                         // Erlaube den Zugriff auf alle unsere Authentifizierungs-Endpunkte
                         .requestMatchers("/api/auth/**").permitAll()
                         // Alle anderen Anfragen erfordern eine Authentifizierung
-                        .anyRequest().authenticated()
+                        .anyRequest().hasRole("USER")
                 )
                 // JWT Filter
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

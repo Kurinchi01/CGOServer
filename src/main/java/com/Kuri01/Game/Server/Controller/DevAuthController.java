@@ -40,8 +40,9 @@ public class DevAuthController {
                     Player newPlayer = new Player();
                     newPlayer.setName(request.username());
                     // Setze eine Fake-Google-ID, damit das Feld nicht leer ist
-                    newPlayer.setGoogleId("dev-user-" + request.username());
+                    newPlayer.setGoogleId("dev-user-"+request.username());
                     newPlayer.setLevel(1);
+                    newPlayer.getRoles().add("ROLE_USER");
                     return playerRepository.save(newPlayer);
                 });
 

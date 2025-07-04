@@ -49,7 +49,7 @@ INSERT INTO character (id, name, max_hp, attack, character_type, rarity,charge_r
 --INSERT INTO character (id, name, max_hp, attack, character_type, google_id, level, experience_points, equipment_id, inventory_id) VALUES
 --(1, 'Kuri01', 100, 10, 'PLAYER', 'google-id-12345', 1, 0, 1, 1);
 
-INSERT INTO character (id, name, max_hp, attack, character_type, rarity,charge_rate) VALUES (1, 'Kuri01', 100, 20, 'PLAYER', null, 5);
+INSERT INTO character (id, name, max_hp, attack, character_type, rarity,charge_rate,google_id) VALUES (1, 'Kuri01', 100, 20, 'PLAYER', null, 5,'Kuri01');
 
 INSERT INTO player_roles (player_id, role) VALUES (1, 'ROLE_USER');
 INSERT INTO player_roles (player_id, role) VALUES (1, 'ROLE_ADMIN');
