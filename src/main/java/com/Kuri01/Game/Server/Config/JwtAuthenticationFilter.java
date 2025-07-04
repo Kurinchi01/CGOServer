@@ -1,7 +1,6 @@
 package com.Kuri01.Game.Server.Config;
 
 import com.Kuri01.Game.Server.Service.JwtService;
-import com.Kuri01.Game.Server.Service.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,11 +12,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component // Damit Spring diese Klasse als Bean erkennt
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
@@ -51,6 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 // ...und setze es im Security-Kontext. Damit ist der User für diese Anfrage eingeloggt.
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                logger.info("User '{}' erfolgreich authentifiziert und im Kontext gesetzt.", googleId);
             }
         }
         filterChain.doFilter(request, response);

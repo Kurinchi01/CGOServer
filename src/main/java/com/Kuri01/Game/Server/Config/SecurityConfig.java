@@ -54,9 +54,7 @@ public class SecurityConfig {
     // Wir müssen Spring auch sagen, wie es den UserDetailsService findet.
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
         // Da wir keine Passwörter verwenden, brauchen wir keinen PasswordEncoder
-        return authProvider;
+        return new DaoAuthenticationProvider(userDetailsService);
     }
 }
