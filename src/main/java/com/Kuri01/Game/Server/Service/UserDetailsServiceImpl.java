@@ -24,11 +24,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 'username' ist in unserem Fall die Google ID
-        Player player = playerRepository.findByGoogleId(username)
+        return playerRepository.findByGoogleId(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Spieler nicht gefunden mit Google ID: " + username));
 
-        // Wir geben ein Spring Security User-Objekt zurück.
-        // Das Passwort wird hier nicht benötigt, da wir JWT verwenden.
-        return new User(player.getGoogleId(), "", new ArrayList<>());
+
     }
 }

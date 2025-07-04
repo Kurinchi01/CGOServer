@@ -102,7 +102,7 @@ class GameServiceTest4 {
         // ========== 2. Act (Ausführen) ==========
 
         // Rufe die Methode auf, die wir testen wollen.
-        List<Item> lootResult = gameService.processRoundEnd(1L,roundId, winRequest);
+        List<Item> lootResult = gameService.processRoundEnd("1",roundId, winRequest);
 
 
         // ========== 3. Assert (Überprüfen) ==========
@@ -138,7 +138,7 @@ class GameServiceTest4 {
 
         // ========== 2. Act (Ausführen) ==========
 
-        List<Item> lootResult = gameService.processRoundEnd(1L,roundId, lossRequest);
+        List<Item> lootResult = gameService.processRoundEnd("1",roundId, lossRequest);
 
 
         // ========== 3. Assert (Überprüfen) ==========
