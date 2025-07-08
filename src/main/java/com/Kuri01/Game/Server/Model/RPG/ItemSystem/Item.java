@@ -24,6 +24,6 @@ public class Item {
     @Enumerated(EnumType.STRING)
     private Rarity rarity;
 
-    // ...
+    // --- Leerer Konstruktor ---
     public Item() {}
 }

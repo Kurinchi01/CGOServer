@@ -2,6 +2,7 @@ package com.Kuri01.Game.Server.Model.RPG.ItemSystem;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import java.util.Map;
 @DiscriminatorValue("EQUIPMENT")
 @Getter
 @Setter
+@NoArgsConstructor
 public class EquipmentItem extends Item {
 
     /**
@@ -36,11 +38,4 @@ public class EquipmentItem extends Item {
     @Column(name = "stat_value")       // Name der Spalte für den Wert der Map (z.B. 10).
     private Map<String, Integer> stats = new HashMap<>();
 
-    /**
-     * Ein leerer Konstruktor ist für JPA zwingend erforderlich, um Instanzen
-     * der Klasse aus Datenbankdaten erstellen zu können.
-     */
-    public EquipmentItem() {
-
-    }
 }
