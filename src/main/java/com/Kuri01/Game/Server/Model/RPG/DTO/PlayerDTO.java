@@ -1,8 +1,16 @@
 package com.Kuri01.Game.Server.Model.RPG.DTO;
 
+import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Equipment;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
+
 /**
  * Data Transfer Object für die Spielerdaten, die zum Start einer Runde benötigt werden.
  */
+@Setter
+@Getter
 public class PlayerDTO {
 
     // --- Basis-Charakterwerte ---
@@ -14,13 +22,11 @@ public class PlayerDTO {
     private float attack;
 
     // --- Zusammengesetzte Objekte ---
-    private EquipmentDTO equipment;
+    private Equipment equipment;
     private List<ItemDTO> inventoryItems;
 
     // --- Leerer Konstruktor & Getter/Setter für alle Felder ---
-    // Das Feld currentHp fehlt hier, da es vom Server nicht gesendet wird.
 
     public PlayerDTO() {}
 
-    // ... Getter und Setter für die oben genannten Felder ...
 }

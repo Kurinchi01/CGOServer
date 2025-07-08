@@ -1,9 +1,11 @@
 package com.Kuri01.Game.Server.Controller;
 
+import com.Kuri01.Game.Server.Model.RPG.DTO.PlayerDTO;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Equipment;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.EquipmentSlot;
 import com.Kuri01.Game.Server.Model.RPG.Player;
 import com.Kuri01.Game.Server.Service.PlayerEquipmentService;
+import com.Kuri01.Game.Server.Service.PlayerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,33 +24,38 @@ public class PlayerCharacterController {
     private static final Logger logger = LoggerFactory.getLogger(PlayerCharacterController.class);
 
     private final PlayerEquipmentService equipmentService;
+    private final PlayerService playerService;
 
     @Autowired
-    public PlayerCharacterController(PlayerEquipmentService equipmentService) {
+    public PlayerCharacterController(PlayerEquipmentService equipmentService, PlayerService playerService) {
         this.equipmentService = equipmentService;
+        this.playerService = playerService;
     }
 
     /**
      * Gibt das vollständige Profil des aktuell eingeloggten Spielers zurück.
      * Ideal für den Charakter-Bildschirm im Client.
+     *
      * @param authentication Wird von Spring Security automatisch mit den Daten des eingeloggten Benutzers befüllt.
      * @return Ein ResponseEntity mit dem vollständigen Player-Objekt.
      */
     @GetMapping("/me")
-    public ResponseEntity<Player> getMyPlayerData(Authentication authentication) {
+    public ResponseEntity<PlayerDTO> getMyPlayerData(Authentication authentication) {
         // Da wir unsere Player-Klasse UserDetails implementieren lassen haben,
         // können wir sie direkt aus dem "Principal"-Objekt der Authentifizierung casten.
         Player loggedInPlayer = (Player) authentication.getPrincipal();
 
         logger.info("Spielerprofil für '{}' angefragt.", loggedInPlayer.getName());
 
+
         // Kein extra Datenbank-Aufruf nötig! Wir haben bereits das vollständige Spieler-Objekt.
-        return ResponseEntity.ok(loggedInPlayer);
+        return ResponseEntity.ok(playerService.getPlayerProfile(loggedInPlayer.getGoogleId()));
     }
 
     /**
      * Rüstet ein Item aus dem Inventar des Spielers aus.
-     * @param itemId Die ID des auszurüstenden Items.
+     *
+     * @param itemId         Die ID des auszurüstenden Items.
      * @param authentication Das Objekt des eingeloggten Spielers.
      * @return Das aktualisierte Equipment-Objekt des Spielers.
      */
@@ -63,7 +70,8 @@ public class PlayerCharacterController {
 
     /**
      * Legt ein Item von einem bestimmten Slot zurück ins Inventar.
-     * @param slot Der Name des Slots, aus dem das Item entfernt werden soll (z.B. "WEAPON").
+     *
+     * @param slot           Der Name des Slots, aus dem das Item entfernt werden soll (z.B. "WEAPON").
      * @param authentication Das Objekt des eingeloggten Spielers.
      * @return Das aktualisierte Equipment-Objekt des Spielers.
      */
