@@ -1,9 +1,12 @@
 package com.Kuri01.Game.Server.Controller;
 
 import com.Kuri01.Game.Server.Auth.LoginResponse;
+import com.Kuri01.Game.Server.Config.JwtAuthenticationFilter;
 import com.Kuri01.Game.Server.Model.RPG.Player;
 import com.Kuri01.Game.Server.Model.RPG.Repository.PlayerRepository;
 import com.Kuri01.Game.Server.Service.JwtService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,7 @@ public class DevAuthController {
 
     // Ein einfaches DTO für die Anfrage, kann als innere Klasse hier definiert werden.
     public record DevLoginRequest(String username) {}
+    private static final Logger logger = LoggerFactory.getLogger(DevAuthController.class);
 
     @Autowired
     public DevAuthController(PlayerRepository playerRepository, JwtService jwtService) {
@@ -37,6 +41,8 @@ public class DevAuthController {
         // Finde oder erstelle einen Spieler mit dem angegebenen Namen.
         Player player = playerRepository.findByName(request.username()) // Du musst findByName im Repo deklarieren
                 .orElseGet(() -> {
+                    logger.info("User '{}' erfolgreich authentifiziert und im Kontext gesetzt.", request.username());
+
                     Player newPlayer = new Player();
                     newPlayer.setName(request.username());
                     // Setze eine Fake-Google-ID, damit das Feld nicht leer ist
