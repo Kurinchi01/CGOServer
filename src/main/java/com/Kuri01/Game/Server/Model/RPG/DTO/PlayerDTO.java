@@ -2,6 +2,7 @@ package com.Kuri01.Game.Server.Model.RPG.DTO;
 
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Equipment;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
  */
 @Setter
 @Getter
+@NoArgsConstructor
 public class PlayerDTO {
 
     // --- Basis-Charakterwerte ---
@@ -23,10 +25,6 @@ public class PlayerDTO {
 
     // --- Zusammengesetzte Objekte ---
     private EquipmentDTO equipmentDTO;
-    private List<ItemDTO> inventoryItemsDTO;
-
-    // --- Leerer Konstruktor ---
-
-    public PlayerDTO() {}
+    private InventoryDTO inventory;
 
 }

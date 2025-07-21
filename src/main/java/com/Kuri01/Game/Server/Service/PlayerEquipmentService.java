@@ -3,7 +3,7 @@ package com.Kuri01.Game.Server.Service;
 
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Equipment;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.EquipmentItem;
-import com.Kuri01.Game.Server.Model.RPG.ItemSystem.EquipmentSlot;
+import com.Kuri01.Game.Server.Model.RPG.ItemSystem.EquipmentSlotEnum;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Item;
 import com.Kuri01.Game.Server.Model.RPG.Player;
 import com.Kuri01.Game.Server.Model.RPG.Repository.ItemRepository;
@@ -42,7 +42,7 @@ public class PlayerEquipmentService {
         }
 
         Equipment equipment = player.getEquipment();
-        EquipmentSlot targetSlot = equipmentItem.getEquipmentSlot();
+        EquipmentSlotEnum targetSlot = equipmentItem.getEquipmentSlotEnum();
 
         // 3. Altes Item (falls vorhanden) ablegen und ins Inventar legen
         EquipmentItem oldItem = null;
@@ -93,7 +93,7 @@ public class PlayerEquipmentService {
     }
 
     @Transactional
-    public Equipment unequipItem(Long playerId, EquipmentSlot slotToUnequip) {
+    public Equipment unequipItem(Long playerId, EquipmentSlotEnum slotToUnequip) {
         // Ähnliche Logik wie oben, nur in die andere Richtung...
         // 1. Spieler und Equipment laden
         // 2. Item aus dem Slot holen

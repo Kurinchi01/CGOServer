@@ -2,7 +2,7 @@ package com.Kuri01.Game.Server.Controller;
 
 import com.Kuri01.Game.Server.Model.RPG.DTO.PlayerDTO;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Equipment;
-import com.Kuri01.Game.Server.Model.RPG.ItemSystem.EquipmentSlot;
+import com.Kuri01.Game.Server.Model.RPG.ItemSystem.EquipmentSlotEnum;
 import com.Kuri01.Game.Server.Model.RPG.Player;
 import com.Kuri01.Game.Server.Service.PlayerEquipmentService;
 import com.Kuri01.Game.Server.Service.PlayerService;
@@ -81,7 +81,7 @@ public class PlayerCharacterController {
         logger.info("Spieler '{}' versucht, Item aus Slot {} abzulegen.", loggedInPlayer.getName(), slot);
 
         // Wandle den String aus der URL in unseren sicheren Enum-Typ um.
-        EquipmentSlot slotToUnequip = EquipmentSlot.valueOf(slot.toUpperCase());
+        EquipmentSlotEnum slotToUnequip = EquipmentSlotEnum.valueOf(slot.toUpperCase());
 
         Equipment updatedEquipment = equipmentService.unequipItem(loggedInPlayer.getId(), slotToUnequip);
         return ResponseEntity.ok(updatedEquipment);

@@ -26,7 +26,7 @@ public class EquipmentItem extends Item {
      * in der Datenbank gespeichert wird, was lesbarer ist als der numerische Index.
      */
     @Enumerated(EnumType.STRING)
-    private EquipmentSlot equipmentSlot;
+    private EquipmentSlotEnum equipmentSlotEnum;
 
     /**
      * @ElementCollection weist JPA an, diese Sammlung in einer separaten Tabelle zu verwalten,

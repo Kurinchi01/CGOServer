@@ -2,11 +2,13 @@ package com.Kuri01.Game.Server.Model.RPG.ItemSystem;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class InventorySlot {
     @Id
     @GeneratedValue
@@ -23,7 +25,7 @@ public class InventorySlot {
 
     private int quantity;
 
-    public InventorySlot() {}
+    private int slotIndex;
 
     public InventorySlot(Inventory inventory) {
         this.inventory = inventory;

@@ -1,6 +1,6 @@
 package com.Kuri01.Game.Server.Model.RPG.DTO;
 
-import com.Kuri01.Game.Server.Model.RPG.ItemSystem.EquipmentSlot;
+import com.Kuri01.Game.Server.Model.RPG.ItemSystem.EquipmentSlotEnum;
 import com.Kuri01.Game.Server.Model.RPG.Rarity;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,8 +14,10 @@ public class ItemDTO {
     private String description;
     private Rarity rarity;
     private String itemType;
-    private EquipmentSlot equipmentSlot; // Nur für EquipmentItems relevant
-    private Map<String, Integer> stats;  // Nur für EquipmentItems relevant
+    private EquipmentSlotEnum equipmentSlotEnum; // Nur für EquipmentItems relevant
+    private Map<String, Integer> stats;
+    private int quantity;
+    private String iconName;// Nur für EquipmentItems relevant
 
     // --- Leerer Konstruktor ---
     public ItemDTO() {

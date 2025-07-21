@@ -1,15 +1,12 @@
 package com.Kuri01.Game.Server.Service;
 
-import com.Kuri01.Game.Server.Model.RPG.DTO.EquipmentDTO;
-import com.Kuri01.Game.Server.Model.RPG.DTO.ItemDTO;
-import com.Kuri01.Game.Server.Model.RPG.DTO.PlayerDTO;
+import com.Kuri01.Game.Server.Model.RPG.DTO.*;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.*;
 import com.Kuri01.Game.Server.Model.RPG.Player;
 import com.Kuri01.Game.Server.Model.RPG.Repository.PlayerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +27,9 @@ public class PlayerService {
     }
 
     private PlayerDTO mapToPlayerDTO(Player player) {
+        //erstelle DTO
         PlayerDTO dto = new PlayerDTO();
+        //fülle DTO mit player attributen
         dto.setId(player.getId());
         dto.setName(player.getName());
         dto.setLevel(player.getLevel());
@@ -38,21 +37,34 @@ public class PlayerService {
         dto.setMaxHp(player.getMaxHp());
         dto.setAttack(player.getAttack());
 
-        // KORRIGIERT: Rufe die neue Mapper-Methode für das Equipment auf.
+        //maper um DTO mit equipment zu füllen
         dto.setEquipmentDTO(mapToEquipmentDTO(player.getEquipment()));
 
-        // KORRIGIERT: Streame über die Slots, nicht über die Items, um die 'quantity' zu erhalten.
-        // Und filtere leere Slots heraus.
-        if (player.getInventory() != null && player.getInventory().getSlots() != null) {
-            List<ItemDTO> inventoryItems = player.getInventory().getSlots().stream()
-                    .filter(slot -> slot.getItem() != null) // Ignoriere leere Inventarplätze
-                    .map(this::mapToItemDTO) // Übergib den ganzen Slot an den Mapper
-                    .collect(Collectors.toList());
-            dto.setInventoryItemsDTO(inventoryItems);
-        } else {
-            dto.setInventoryItemsDTO(Collections.emptyList());
-        }
+        //maper um DTO mit iventory zu füllen
+        dto.setInventory(mapToInventoryDTO(player.getInventory()));
 
+        return dto;
+    }
+
+    private InventoryDTO mapToInventoryDTO(Inventory inventory) {
+        if (inventory == null) return null;
+
+        InventoryDTO dto = new InventoryDTO();
+        dto.setCapacity(inventory.getCapacity());
+
+        // Wandle nur die belegten Slots in DTOs um, um Daten zu sparen
+        List<InventorySlotDTO> slotDTOs = inventory.getSlots().stream()
+                .filter(slot -> slot.getItem() != null)
+                .map(slot -> {
+                    InventorySlotDTO slotDto = new InventorySlotDTO();
+                    // WICHTIG: Du musst einen Weg haben, den Index des Slots zu bekommen.
+                    slotDto.setQuantity(slot.getQuantity());
+                    slotDto.setItem(mapToItemDTO(slot.getItem()));
+                    return slotDto;
+                })
+                .collect(Collectors.toList());
+
+        dto.setSlots(slotDTOs);
         return dto;
     }
 
@@ -87,14 +99,14 @@ public class PlayerService {
         dto.setName(item.getName());
         dto.setDescription(item.getDescription());
         dto.setRarity(item.getRarity());
-//      dto.setIconName(item.getIconName()); // Wichtiges, fehlendes Feld
+        dto.setIconName(item.getIconName());
 //      dto.setQuantity(1); // Standard-Anzahl für nicht-gestapelte Items
 
         // Prüfe den spezifischen Typ des Items und setze die entsprechenden Felder.
         // Diese moderne 'instanceof'-Syntax ist sauberer als ein Cast.
         if (item instanceof EquipmentItem equipItem) {
             dto.setItemType("EQUIPMENT");
-            dto.setEquipmentSlot(equipItem.getEquipmentSlot());
+            dto.setEquipmentSlotEnum(equipItem.getEquipmentSlotEnum());
             dto.setStats(equipItem.getStats());
         } else if (item instanceof LootChest) {
             dto.setItemType("CHEST");

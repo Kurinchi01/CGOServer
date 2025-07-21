@@ -3,6 +3,7 @@ package com.Kuri01.Game.Server.Model.RPG.ItemSystem;
 import com.Kuri01.Game.Server.Model.RPG.Rarity;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -10,6 +11,7 @@ import lombok.Setter;
 @DiscriminatorColumn(name = "item_type")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Item {
 
     @Id
@@ -24,6 +26,11 @@ public class Item {
     @Enumerated(EnumType.STRING)
     private Rarity rarity;
 
-    // --- Leerer Konstruktor ---
-    public Item() {}
+    @Column(nullable = false)
+    private int quantity=1;
+
+    @Column(nullable = false)
+    private String iconName;
+
+
 }

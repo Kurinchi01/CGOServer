@@ -2,9 +2,8 @@ package com.Kuri01.Game.Server.Model.RPG.ItemSystem;
 
 
 import lombok.Getter;
-import lombok.Setter;
 
-public enum EquipmentSlot {
+public enum EquipmentSlotEnum {
     WEAPON("Waffe"),
     HELMET("Helm"),
     ARMOR("Rüstung"),
@@ -16,7 +15,7 @@ public enum EquipmentSlot {
     private final String displayName;
 
 
-    EquipmentSlot(String displayName) {
+    EquipmentSlotEnum(String displayName) {
         this.displayName = displayName;
     }
 
