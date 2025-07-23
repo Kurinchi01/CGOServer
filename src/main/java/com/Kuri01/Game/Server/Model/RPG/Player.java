@@ -28,7 +28,7 @@ public class Player extends Character implements UserDetails {
     @JoinColumn(name = "equipment_id", referencedColumnName = "id")
     private Equipment equipment;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
     private PlayerWallet playerWallet;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -51,6 +51,7 @@ public class Player extends Character implements UserDetails {
         super();
         this.inventory = new Inventory(this,20);
         this.equipment = new Equipment();
+        this.playerWallet = new PlayerWallet(this);
     }
 
     /// ===================================================================

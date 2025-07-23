@@ -1,5 +1,6 @@
 package com.Kuri01.Game.Server.Service;
 
+import com.Kuri01.Game.Server.Model.RPG.Currency.PlayerWallet;
 import com.Kuri01.Game.Server.Model.RPG.DTO.*;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.*;
 import com.Kuri01.Game.Server.Model.RPG.Player;
@@ -20,7 +21,8 @@ public class PlayerService {
 
     @Transactional(readOnly = true)
     public PlayerDTO getPlayerProfile(String googleId) {
-        Player player = playerRepository.findByGoogleId(googleId).orElseThrow(() -> new IllegalArgumentException("Spieler nicht gefunden: " + googleId));;
+        Player player = playerRepository.findByGoogleId(googleId).orElseThrow(() -> new IllegalArgumentException("Spieler nicht gefunden: " + googleId));
+        ;
 
         // Hier, innerhalb der Transaktion, mappen wir die Entity auf ein DTO.
         return mapToPlayerDTO(player);
@@ -29,6 +31,8 @@ public class PlayerService {
     private PlayerDTO mapToPlayerDTO(Player player) {
         //erstelle DTO
         PlayerDTO dto = new PlayerDTO();
+
+
         //fülle DTO mit player attributen
         dto.setId(player.getId());
         dto.setName(player.getName());
@@ -37,11 +41,14 @@ public class PlayerService {
         dto.setMaxHp(player.getMaxHp());
         dto.setAttack(player.getAttack());
 
+        //maper um DTO mit Wallte zu füllen
+        dto.setPlayerWalletDTO(mapToPlayerWalletDTO(player.getPlayerWallet()));
+
         //maper um DTO mit equipment zu füllen
         dto.setEquipmentDTO(mapToEquipmentDTO(player.getEquipment()));
 
         //maper um DTO mit iventory zu füllen
-        dto.setInventory(mapToInventoryDTO(player.getInventory()));
+        dto.setInventoryDTO(mapToInventoryDTO(player.getInventory()));
 
         return dto;
     }
@@ -68,6 +75,16 @@ public class PlayerService {
         return dto;
     }
 
+    private PlayerWalletDTO mapToPlayerWalletDTO(PlayerWallet playerWallet)
+    {
+        PlayerWalletDTO playerWalletDTO = new PlayerWalletDTO();
+
+        playerWalletDTO.setCandy(playerWallet.getCandy());
+        playerWalletDTO.setGold(playerWallet.getGold());
+
+        return playerWalletDTO;
+    }
+
     private EquipmentDTO mapToEquipmentDTO(Equipment equipment) {
         if (equipment == null) return null;
         EquipmentDTO dto = new EquipmentDTO();
@@ -90,6 +107,7 @@ public class PlayerService {
 //        }
         return dto;
     }
+
     private ItemDTO mapToItemDTO(Item item) {
         if (item == null) {
             return null;
