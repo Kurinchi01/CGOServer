@@ -28,9 +28,20 @@ public class Inventory {
 
     private int capacity;
 
+
     // Ein Inventar hat viele Slots.
     @OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<InventorySlot> slots = new ArrayList<>();
+
+    public Inventory(Player player, int initialSize) {
+        this.player = player;
+        this.capacity=initialSize;
+        for (int i = 0; i < initialSize; i++) {
+            // Verwende die neue, sichere Hilfsmethode
+            addSlot(new InventorySlot(i));
+        }
+    }
+
 
     public boolean addItem(EquipmentItem newItem) {
         int index = findFirstEmptySlotIndex();
@@ -52,20 +63,22 @@ public class Inventory {
         return -1;
     }
 
+    public void addSlot(InventorySlot slot) {
+        this.slots.add(slot);
+        slot.setInventory(this); //Setzt die Rück-Referenz automatisch!
+    }
+
+
     //Annahme feld capacity gesetzt, wird nur aufgerufen um neuen Spieler zu erstellen
-    public void fillSlots()
-    {
-        for(int i=0;i<capacity;i++)
-        {
-            InventorySlot tmp= new InventorySlot(this);
-            this.slots.add(tmp);
+    public void fillSlots() {
+        for (int i = 0; i < capacity; i++) {
+            InventorySlot tmp = new InventorySlot(i);
+            addSlot(tmp);
         }
     }
 
-    public void setItemToSlot(int slotIndex,Item item)
-    {
-        if(item!=null)
-        {
+    public void setItemToSlot(int slotIndex, Item item) {
+        if (item != null) {
             this.slots.get(slotIndex).setItem(item);
         }
     }

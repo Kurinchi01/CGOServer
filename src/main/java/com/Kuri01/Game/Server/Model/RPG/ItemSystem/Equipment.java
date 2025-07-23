@@ -5,41 +5,45 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
+
 public class Equipment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
 
-    // Wir definieren für jeden Slot eine Verknüpfung zu einem Item.
-    // @OneToOne bedeutet: Ein Equipment-Set hat höchstens eine Waffe.
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "weapon_item_id")
-    private EquipmentItem weapon;
+    @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<EquipmentSlot> slots = new HashSet<>();
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "helmet_item_id")
-    private EquipmentItem helmet;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "armor_item_id")
-    private EquipmentItem armor;
+    public Equipment() {
+        // Erstelle beim Erstellen des Equipment-Sets für jeden Enum-Wert einen leeren Slot.
+        for (EquipmentSlotEnum slotEnum : EquipmentSlotEnum.values()) {
+            this.slots.add(new EquipmentSlot(this, slotEnum));
+        }
+    }
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "necklace_item_id")
-    private EquipmentItem necklace;
+    public Item getItemInSlot(EquipmentSlotEnum slotEnum) {
+        return this.slots.stream()
+                .filter(slot -> slot.getSlotEnum() == slotEnum)
+                .findFirst()
+                .map(ItemSlot::getItem) // Gibt das Item oder null zurück
+                .orElse(null);
+    }
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "ring_item_id")
-    private EquipmentItem ring;
+    public void setItemInSlot(EquipmentSlotEnum slotEnum, Item item) {
+        EquipmentSlot tmp = slots.stream().filter(slot -> slot.getSlotEnum() == slotEnum).findFirst().orElseThrow(() -> new IllegalStateException("Kein Equipment-Slot vom Typ " + slotEnum + " gefunden."));
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "shoes_item_id")
-    private EquipmentItem shoes;
+        if (tmp != null) {
+            tmp.setItem(item);
+        }
+    }
+
 
 }

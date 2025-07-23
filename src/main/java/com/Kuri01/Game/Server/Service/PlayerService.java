@@ -71,12 +71,12 @@ public class PlayerService {
     private EquipmentDTO mapToEquipmentDTO(Equipment equipment) {
         if (equipment == null) return null;
         EquipmentDTO dto = new EquipmentDTO();
-        dto.setWeapon(mapToItemDTO(equipment.getWeapon())); // Hier rufen wir mapToItemDTO für ein einzelnes Item auf
-        dto.setHelmet(mapToItemDTO(equipment.getHelmet()));
-        dto.setArmor(mapToItemDTO(equipment.getArmor()));
-        dto.setNecklace(mapToItemDTO(equipment.getNecklace()));
-        dto.setRing(mapToItemDTO(equipment.getRing()));
-        dto.setShoes(mapToItemDTO(equipment.getShoes()));
+        dto.setWeapon(mapToItemDTO(equipment.getItemInSlot(EquipmentSlotEnum.WEAPON))); // Hier rufen wir mapToItemDTO für ein einzelnes Item auf
+        dto.setHelmet(mapToItemDTO(equipment.getItemInSlot(EquipmentSlotEnum.HELMET)));
+        dto.setArmor(mapToItemDTO(equipment.getItemInSlot(EquipmentSlotEnum.ARMOR)));
+        dto.setNecklace(mapToItemDTO(equipment.getItemInSlot(EquipmentSlotEnum.NECKLACE)));
+        dto.setRing(mapToItemDTO(equipment.getItemInSlot(EquipmentSlotEnum.RING)));
+        dto.setShoes(mapToItemDTO(equipment.getItemInSlot(EquipmentSlotEnum.SHOES)));
         return dto;
     }
 

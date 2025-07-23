@@ -45,47 +45,7 @@ public class PlayerEquipmentService {
         EquipmentSlotEnum targetSlot = equipmentItem.getEquipmentSlotEnum();
 
         // 3. Altes Item (falls vorhanden) ablegen und ins Inventar legen
-        EquipmentItem oldItem = null;
-        switch (targetSlot) {
-            case WEAPON -> {
-                oldItem = equipment.getWeapon();
-                equipment.setWeapon(null);
-            }
-            case HELMET -> {
-                oldItem = equipment.getHelmet();
-                equipment.setHelmet(null);
-            }
-            case ARMOR -> {
-                oldItem = equipment.getArmor();
-                equipment.setArmor(null);
-            }
-            case NECKLACE -> {
-                oldItem = equipment.getNecklace();
-                equipment.setNecklace(null);
-            }
-            case RING -> {
-                oldItem = equipment.getRing();
-                equipment.setRing(null);
-            }
-            case SHOES -> {
-                oldItem = equipment.getShoes();
-                equipment.setShoes(null);
-            }
 
-        }
-        if (oldItem != null) {
-            // TODO: Füge oldItem zum Inventar des Spielers hinzu
-            player.getInventory().addItem(oldItem);
-        }
-
-        // 4. Neues Item aus dem Inventar entfernen und anlegen
-        // TODO: Entferne equipmentItem aus dem Inventar
-        // player.getInventory().removeItem(equipmentItem);
-        switch (targetSlot) {
-            case WEAPON -> equipment.setWeapon(equipmentItem);
-            case HELMET -> equipment.setHelmet(equipmentItem);
-            // ... weitere cases für alle Slots
-        }
 
         // 5. Änderungen speichern (passiert dank @Transactional automatisch am Ende der Methode)
         playerRepository.save(player);

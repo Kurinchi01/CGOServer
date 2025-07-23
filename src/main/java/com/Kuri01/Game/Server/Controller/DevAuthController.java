@@ -56,10 +56,9 @@ public class DevAuthController {
                     newPlayer.setGoogleId("dev-user-"+request.username());
                     newPlayer.setLevel(1);
                     newPlayer.getRoles().add("ROLE_USER");
-                    newPlayer.getInventory().setCapacity(20);
-                    newPlayer.getInventory().fillSlots();
-                    Item tmpItem = itemRepository.findById(1L).orElse(null);
-                    newPlayer.getInventory().setItemToSlot(0,tmpItem);
+
+                    //Item tmpItem = itemRepository.findById(1L).orElse(null);
+                    //newPlayer.getInventory().setItemToSlot(0,tmpItem);
                     return playerRepository.save(newPlayer);
                 });
 

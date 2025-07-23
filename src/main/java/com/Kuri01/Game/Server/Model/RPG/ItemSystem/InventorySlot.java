@@ -9,25 +9,18 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class InventorySlot {
-    @Id
-    @GeneratedValue
-    private Long id;
+public class InventorySlot extends ItemSlot {
+
+    // Die Felder 'id' und 'item' werden von ItemSlot geerbt
 
     @ManyToOne
     @JoinColumn(name = "inventory_id")
     private Inventory inventory;
 
-    // Ein Slot kann ein Item enthalten (oder null sein).
-    @ManyToOne
-    @Getter
-    private Item item;
-
-    private int quantity;
-
+    private int quantity = 1;
     private int slotIndex;
 
-    public InventorySlot(Inventory inventory) {
-        this.inventory = inventory;
+    public InventorySlot(int slotIndex) {
+        this.slotIndex = slotIndex;
     }
 }

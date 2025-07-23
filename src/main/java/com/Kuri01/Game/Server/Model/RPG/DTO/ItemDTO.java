@@ -17,7 +17,7 @@ public class ItemDTO {
     private EquipmentSlotEnum equipmentSlotEnum; // Nur für EquipmentItems relevant
     private Map<String, Integer> stats;
     private int quantity;
-    private String iconName;// Nur für EquipmentItems relevant
+    private String iconName;
 
     // --- Leerer Konstruktor ---
     public ItemDTO() {

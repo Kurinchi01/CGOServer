@@ -45,7 +45,7 @@ public class Player extends Character implements UserDetails {
     public Player() {
         // Beim Erstellen eines neuen Spielers erstellen wir auch direkt ein leeres Inventar.
         super();
-        this.inventory = new Inventory();
+        this.inventory = new Inventory(this,20);
         this.equipment = new Equipment();
     }
 
