@@ -1,5 +1,6 @@
 package com.Kuri01.Game.Server.Model.RPG;
 
+import com.Kuri01.Game.Server.Model.RPG.Currency.PlayerWallet;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Equipment;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Inventory;
 import jakarta.persistence.*;
@@ -26,6 +27,9 @@ public class Player extends Character implements UserDetails {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "equipment_id", referencedColumnName = "id")
     private Equipment equipment;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private PlayerWallet playerWallet;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "player_roles", joinColumns = @JoinColumn(name = "player_id"))
