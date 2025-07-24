@@ -2,7 +2,6 @@ package com.Kuri01.Game.Server.Model.RPG.ItemSystem;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
@@ -11,7 +10,6 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-
 public class Equipment {
 
     @Id
@@ -19,18 +17,18 @@ public class Equipment {
     private Long id;
 
     @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<EquipmentSlot> slots = new HashSet<>();
+    private Set<EquipmentSlot> equipmentSlots = new HashSet<>();
 
 
     public Equipment() {
         // Erstelle beim Erstellen des Equipment-Sets für jeden Enum-Wert einen leeren Slot.
         for (EquipmentSlotEnum slotEnum : EquipmentSlotEnum.values()) {
-            this.slots.add(new EquipmentSlot(this, slotEnum));
+            this.equipmentSlots.add(new EquipmentSlot(this, slotEnum));
         }
     }
 
     public Item getItemInSlot(EquipmentSlotEnum slotEnum) {
-        return this.slots.stream()
+        return this.equipmentSlots.stream()
                 .filter(slot -> slot.getSlotEnum() == slotEnum)
                 .findFirst()
                 .map(ItemSlot::getItem) // Gibt das Item oder null zurück
@@ -38,7 +36,7 @@ public class Equipment {
     }
 
     public void setItemInSlot(EquipmentSlotEnum slotEnum, Item item) {
-        EquipmentSlot tmp = slots.stream().filter(slot -> slot.getSlotEnum() == slotEnum).findFirst().orElseThrow(() -> new IllegalStateException("Kein Equipment-Slot vom Typ " + slotEnum + " gefunden."));
+        EquipmentSlot tmp = equipmentSlots.stream().filter(slot -> slot.getSlotEnum() == slotEnum).findFirst().orElseThrow(() -> new IllegalStateException("Kein Equipment-Slot vom Typ " + slotEnum + " gefunden."));
 
         if (tmp != null) {
             tmp.setItem(item);
