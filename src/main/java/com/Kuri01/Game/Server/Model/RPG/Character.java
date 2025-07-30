@@ -21,7 +21,7 @@ public abstract class Character {
     private float maxHp;
     private float attack;
     @Column(nullable = true)
-    private float chargeRate=5f;//oder auch atkcooldown auf client-side
+    private float chargeRate=5f;
 
 
     protected Character() {

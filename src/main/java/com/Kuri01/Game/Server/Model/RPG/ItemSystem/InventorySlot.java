@@ -1,5 +1,6 @@
 package com.Kuri01.Game.Server.Model.RPG.ItemSystem;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,9 +16,10 @@ public class InventorySlot extends ItemSlot {
 
     @ManyToOne
     @JoinColumn(name = "inventory_id")
+    @JsonBackReference
     private Inventory inventory;
 
-    private int quantity = 1;
+
     private int slotIndex;
 
     public InventorySlot(int slotIndex) {

@@ -3,8 +3,12 @@ package com.Kuri01.Game.Server.Model.RPG;
 import com.Kuri01.Game.Server.Model.RPG.Currency.PlayerWallet;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Equipment;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Inventory;
+import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Item;
+import com.Kuri01.Game.Server.Model.RPG.ItemSystem.ItemSlot;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,9 +30,11 @@ public class Player extends Character implements UserDetails {
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "equipment_id", referencedColumnName = "id")
+    @JsonManagedReference
     private Equipment equipment;
 
     @OneToOne(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private PlayerWallet playerWallet;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -44,6 +50,7 @@ public class Player extends Character implements UserDetails {
     // orphanRemoval = true: Wenn die Verknüpfung zum Inventar entfernt wird, wird es gelöscht.
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "inventory_id", referencedColumnName = "id")
+    @JsonManagedReference
     private Inventory inventory;
 
     public Player() {
@@ -52,6 +59,16 @@ public class Player extends Character implements UserDetails {
         this.inventory = new Inventory(this,20);
         this.equipment = new Equipment();
         this.playerWallet = new PlayerWallet(this);
+    }
+
+    public void swapItemSlots(ItemSlot sourceSlot, ItemSlot targetSlot) {
+
+        Item sourceItem = sourceSlot.getItem();
+        Item targetItem = targetSlot.getItem();
+
+        targetSlot.setItem(sourceItem);
+        sourceSlot.setItem(targetItem);
+
     }
 
     /// ===================================================================

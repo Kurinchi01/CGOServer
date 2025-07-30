@@ -1,11 +1,11 @@
 package com.Kuri01.Game.Server.Model.RPG.ItemSystem;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter
@@ -16,31 +16,26 @@ public class Equipment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<EquipmentSlot> equipmentSlots = new HashSet<>();
+    @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @MapKeyEnumerated(EnumType.STRING)
+    @JsonManagedReference
+    private Map<EquipmentSlotEnum,EquipmentSlot> equipmentSlots =  new HashMap<>();
 
 
     public Equipment() {
         // Erstelle beim Erstellen des Equipment-Sets für jeden Enum-Wert einen leeren Slot.
         for (EquipmentSlotEnum slotEnum : EquipmentSlotEnum.values()) {
-            this.equipmentSlots.add(new EquipmentSlot(this, slotEnum));
+            this.equipmentSlots.put(slotEnum,new EquipmentSlot(this, slotEnum));
         }
     }
 
     public Item getItemInSlot(EquipmentSlotEnum slotEnum) {
-        return this.equipmentSlots.stream()
-                .filter(slot -> slot.getSlotEnum() == slotEnum)
-                .findFirst()
-                .map(ItemSlot::getItem) // Gibt das Item oder null zurück
-                .orElse(null);
+        EquipmentSlot slot = this.equipmentSlots.get(slotEnum);
+        return (slot != null) ? slot.getItem() : null;
     }
 
     public void setItemInSlot(EquipmentSlotEnum slotEnum, Item item) {
-        EquipmentSlot tmp = equipmentSlots.stream().filter(slot -> slot.getSlotEnum() == slotEnum).findFirst().orElseThrow(() -> new IllegalStateException("Kein Equipment-Slot vom Typ " + slotEnum + " gefunden."));
-
-        if (tmp != null) {
-            tmp.setItem(item);
-        }
+       this.equipmentSlots.get(slotEnum).setItem(item);
     }
 
 

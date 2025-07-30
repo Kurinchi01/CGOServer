@@ -1,5 +1,6 @@
 package com.Kuri01.Game.Server.Model.RPG.ItemSystem;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ public class EquipmentSlot extends ItemSlot {
 
     @ManyToOne
     @JoinColumn(name = "equipment_id")
+    @JsonBackReference
     private Equipment equipment; // Gehört zum Equipment, nicht direkt zum Player
 
     @Enumerated(EnumType.STRING)

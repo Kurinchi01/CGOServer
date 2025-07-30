@@ -1,6 +1,6 @@
 package com.Kuri01.Game.Server.Controller;
 
-import com.Kuri01.Game.Server.Model.RPG.DTO.PlayerDTO;
+import com.Kuri01.Game.Server.DTO.PlayerDTO;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Equipment;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.EquipmentSlotEnum;
 import com.Kuri01.Game.Server.Model.RPG.Player;

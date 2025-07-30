@@ -41,4 +41,6 @@ public class CurrencyTransaction {
         this.reason=reason;
         this.currencyType=type;
     }
+
+
 }

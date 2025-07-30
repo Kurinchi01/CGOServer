@@ -1,7 +1,7 @@
 package com.Kuri01.Game.Server.Service;
 
+import com.Kuri01.Game.Server.DTO.*;
 import com.Kuri01.Game.Server.Model.RPG.Currency.PlayerWallet;
-import com.Kuri01.Game.Server.Model.RPG.DTO.*;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.*;
 import com.Kuri01.Game.Server.Model.RPG.Player;
 import com.Kuri01.Game.Server.Model.RPG.Repository.PlayerRepository;
@@ -25,6 +25,10 @@ public class PlayerService {
         ;
 
         // Hier, innerhalb der Transaktion, mappen wir die Entity auf ein DTO.
+        return mapToPlayerDTO(player);
+    }
+
+    public PlayerDTO getPlayerProfileJUnitTest(Player player) {
         return mapToPlayerDTO(player);
     }
 
@@ -58,25 +62,36 @@ public class PlayerService {
 
         InventoryDTO dto = new InventoryDTO();
         dto.setCapacity(inventory.getCapacity());
+        dto.setPlayer(inventory.getPlayer());
+        dto.setId(inventory.getId());
 
-        // Wandle nur die belegten Slots in DTOs um, um Daten zu sparen
+
         List<InventorySlotDTO> slotDTOs = inventory.getSlots().stream()
-                .filter(slot -> slot.getItem() != null)
                 .map(slot -> {
-                    InventorySlotDTO slotDto = new InventorySlotDTO();
-                    // WICHTIG: Du musst einen Weg haben, den Index des Slots zu bekommen.
-                    slotDto.setQuantity(slot.getQuantity());
-                    slotDto.setItem(mapToItemDTO(slot.getItem()));
-                    return slotDto;
+
+                    assert slot != null;
+
+                    return mapToInventorySlotDTO(slot);
+
                 })
                 .collect(Collectors.toList());
 
-        dto.setSlots(slotDTOs);
+        dto.setInventorySlots(slotDTOs);
         return dto;
     }
 
-    private PlayerWalletDTO mapToPlayerWalletDTO(PlayerWallet playerWallet)
-    {
+    private InventorySlotDTO mapToInventorySlotDTO(InventorySlot inventorySlot) {
+        InventorySlotDTO tmp = new InventorySlotDTO();
+
+        tmp.setId(inventorySlot.getId());
+        tmp.setItem(mapToItemDTO(inventorySlot.getItem()));
+        tmp.setSlotIndex(inventorySlot.getSlotIndex());
+        tmp.setInventory(inventorySlot.getInventory());
+
+        return tmp;
+    }
+
+    private PlayerWalletDTO mapToPlayerWalletDTO(PlayerWallet playerWallet) {
         PlayerWalletDTO playerWalletDTO = new PlayerWalletDTO();
 
         playerWalletDTO.setCandy(playerWallet.getCandy());
@@ -88,37 +103,31 @@ public class PlayerService {
     private EquipmentDTO mapToEquipmentDTO(Equipment equipment) {
         if (equipment == null) return null;
         EquipmentDTO dto = new EquipmentDTO();
-        dto.setWeapon(mapToItemDTO(equipment.getItemInSlot(EquipmentSlotEnum.WEAPON))); // Hier rufen wir mapToItemDTO für ein einzelnes Item auf
-        dto.setHelmet(mapToItemDTO(equipment.getItemInSlot(EquipmentSlotEnum.HELMET)));
-        dto.setArmor(mapToItemDTO(equipment.getItemInSlot(EquipmentSlotEnum.ARMOR)));
-        dto.setNecklace(mapToItemDTO(equipment.getItemInSlot(EquipmentSlotEnum.NECKLACE)));
-        dto.setRing(mapToItemDTO(equipment.getItemInSlot(EquipmentSlotEnum.RING)));
-        dto.setShoes(mapToItemDTO(equipment.getItemInSlot(EquipmentSlotEnum.SHOES)));
+        dto.setId(equipment.getId());
+        for (EquipmentSlot a : equipment.getEquipmentSlots().values()) {
+            EquipmentSlotEnum equipmentSlotEnum = a.getSlotEnum();
+            EquipmentSlot equipmentSlot = equipment.getEquipmentSlots().get(equipmentSlotEnum);
+            dto.getEquipmentSlots().put(equipmentSlotEnum, mapToEquipmentSlotDTO(equipmentSlot));
+        }
         return dto;
     }
 
-    private ItemDTO mapToItemDTO(InventorySlot slot) {
-        if (slot == null || slot.getItem() == null) {
-            return null;
-        }
-        ItemDTO dto = mapToItemDTO(slot.getItem()); // Ruft die untere Methode auf
-//        if (dto != null) {
-//            dto.setQuantity(slot.getQuantity()); // Setze die Anzahl aus dem Slot
-//        }
-        return dto;
+    private EquipmentSlotDTO mapToEquipmentSlotDTO(EquipmentSlot equipmentSlot) {
+        if (equipmentSlot == null) return null;
+        EquipmentSlotDTO equipmentSlotDTO = new EquipmentSlotDTO();
+        equipmentSlotDTO.setId(equipmentSlot.getId());
+        equipmentSlotDTO.setItem(mapToItemDTO(equipmentSlot.getItem()));
+        equipmentSlotDTO.setSlotEnum(equipmentSlot.getSlotEnum());
+        return equipmentSlotDTO;
     }
+
 
     private ItemDTO mapToItemDTO(Item item) {
         if (item == null) {
             return null;
         }
         ItemDTO dto = new ItemDTO();
-        dto.setId(item.getId());
-        dto.setName(item.getName());
-        dto.setDescription(item.getDescription());
-        dto.setRarity(item.getRarity());
-        dto.setIconName(item.getIconName());
-//      dto.setQuantity(1); // Standard-Anzahl für nicht-gestapelte Items
+
 
         // Prüfe den spezifischen Typ des Items und setze die entsprechenden Felder.
         // Diese moderne 'instanceof'-Syntax ist sauberer als ein Cast.
@@ -129,7 +138,14 @@ public class PlayerService {
         } else if (item instanceof LootChest) {
             dto.setItemType("CHEST");
         }
-        //  weitere 'else if' für andere Item-Typen folgen ...
+
+
+        dto.setId(item.getId());
+        dto.setName(item.getName());
+        dto.setDescription(item.getDescription());
+        dto.setRarity(item.getRarity());
+        dto.setIconName(item.getIconName());
+        dto.setQuantity(item.getQuantity());
 
         return dto;
     }

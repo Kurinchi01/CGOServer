@@ -1,11 +1,8 @@
-package com.Kuri01.Game.Server.Model.RPG.DTO;
+package com.Kuri01.Game.Server.DTO;
 
-import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Equipment;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 /**
  * Data Transfer Object für die Spielerdaten, die zum Start einer Runde benötigt werden.

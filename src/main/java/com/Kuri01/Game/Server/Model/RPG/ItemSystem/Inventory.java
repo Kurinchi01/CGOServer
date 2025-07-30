@@ -2,6 +2,8 @@ package com.Kuri01.Game.Server.Model.RPG.ItemSystem;
 
 import com.Kuri01.Game.Server.Model.RPG.Player;
 import com.Kuri01.Game.Server.Model.RPG.Repository.ItemRepository;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -24,6 +26,7 @@ public class Inventory {
 
     // Verknüpfung zurück zum Spieler
     @OneToOne(mappedBy = "inventory")
+    @JsonBackReference
     private Player player;
 
     private int capacity;
@@ -31,13 +34,14 @@ public class Inventory {
 
     // Ein Inventar hat viele Slots.
     @OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<InventorySlot> slots = new ArrayList<>();
 
     public Inventory(Player player, int initialSize) {
         this.player = player;
-        this.capacity=initialSize;
+        this.capacity = initialSize;
         for (int i = 0; i < initialSize; i++) {
-            // Verwende die neue, sichere Hilfsmethode
+
             addSlot(new InventorySlot(i));
         }
     }
@@ -63,9 +67,10 @@ public class Inventory {
         return -1;
     }
 
+    //Füge den Slot hinzu und setz dem Slot die Rück-Referenz zum Inventory
     public void addSlot(InventorySlot slot) {
         this.slots.add(slot);
-        slot.setInventory(this); //Setzt die Rück-Referenz automatisch!
+        slot.setInventory(this);
     }
 
 

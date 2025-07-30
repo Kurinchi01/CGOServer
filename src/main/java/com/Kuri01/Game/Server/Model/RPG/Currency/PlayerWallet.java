@@ -1,6 +1,7 @@
 package com.Kuri01.Game.Server.Model.RPG.Currency;
 
 import com.Kuri01.Game.Server.Model.RPG.Player;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ public class PlayerWallet {
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "id")// Verknüpft diese ID mit der des Spielers
+    @JsonBackReference
     private Player player;
 
     private long gold = 2000; // Spielwährung

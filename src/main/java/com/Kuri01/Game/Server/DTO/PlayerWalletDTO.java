@@ -1,4 +1,4 @@
-package com.Kuri01.Game.Server.Model.RPG.DTO;
+package com.Kuri01.Game.Server.DTO;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

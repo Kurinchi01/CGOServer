@@ -1,5 +1,6 @@
-package com.Kuri01.Game.Server.Model.RPG.DTO;
+package com.Kuri01.Game.Server.DTO;
 
+import com.Kuri01.Game.Server.Model.RPG.Player;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +12,9 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class InventoryDTO {
+    private Long id;
+    private Player player;
     private int capacity; // Die Gesamtgröße des Inventars
-    private List<InventorySlotDTO> slots; // Die Liste der belegten Slots
+    private List<InventorySlotDTO> inventorySlots; // Die Liste der belegten Slots
 
 }
