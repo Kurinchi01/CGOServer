@@ -119,13 +119,3 @@ classDiagram
 * **ITEM_SLOT:** Die Basis-Tabelle, die einen Slot als Konzept definiert.
 * **INVENTORY_SLOT:** Eine spezialisierte Tabelle, die einen Platz im Inventar eines Spielers repräsentiert.
 * **EQUIPMENT_SLOT:** Eine spezialisierte Tabelle, die einen Ausrüstungsplatz eines Spielers repräsentiert.
-
----
-
-# 🛠️ Setup & Start
-1. Stellen Sie sicher, dass Java (Version 17 oder höher) und Maven installiert sind.
-2. Klonen Sie das Repository: git clone <repository-url>
-3. Navigieren Sie in das Projektverzeichnis: cd <projekt-ordner>
-4. Starten Sie die Anwendung mit: ./mvnw spring-boot:run
-5. Der Server läuft standardmäßig auf http://localhost:8080.
-6. Die H2-Datenbankkonsole ist unter http://localhost:8080/h2-console erreichbar.
