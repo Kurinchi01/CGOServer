@@ -1,25 +1,28 @@
-CardGameOne - Backend
-Willkommen zum Backend-Repository für CardGameOne, ein kartenbasiertes RPG. Dieses Projekt wird mit Java, dem Spring Boot Framework und JPA/Hibernate für die Datenbank-Interaktion entwickelt.
+# CardGameOne - Backend
 
-🚀 Features
-Spieler-Management: Authentifizierung, Speicherung von Charakterdaten, Rollen und Währungen.
+Willkommen zum Backend-Repository für **CardGameOne**, ein kartenbasiertes RPG. Dieses Projekt wird mit **Java**, dem **Spring Boot Framework** und **JPA/Hibernate** für die Datenbank-Interaktion entwickelt.
 
-Item-System: Ein flexibles System für Ausrüstung, Verbrauchsgegenstände und Loot-Truhen mit Stats und Eigenschaften.
+---
 
-Inventar & Ausrüstung: Persistente Verwaltung von Spieler-Inventaren und angelegter Ausrüstung.
+## 🚀 Features
 
-Spiel-Logik: Serverseitige Logik zur Verwaltung von Spielrunden, Monstern und Kapiteln.
+* **Spieler-Management:** Authentifizierung, Speicherung von Charakterdaten, Rollen und Währungen.
+* **Item-System:** Ein flexibles System für Ausrüstung, Verbrauchsgegenstände und Loot-Truhen mit Stats und Eigenschaften.
+* **Inventar & Ausrüstung:** Persistente Verwaltung von Spieler-Inventaren und angelegter Ausrüstung.
+* **Spiel-Logik:** Serverseitige Logik zur Verwaltung von Spielrunden, Monstern und Kapiteln.
+* **Sicherheit:** JWT-basiertes Authentifizierungssystem zum Schutz der API-Endpunkte.
 
-Sicherheit: JWT-basiertes Authentifizierungssystem zum Schutz der API-Endpunkte.
+---
 
-🏛️ Architektur: Datenbankstruktur
-Das Herzstück des Backends ist eine relationale Datenbank, die den gesamten Spielzustand verwaltet. Die Struktur ist in drei Hauptbereiche unterteilt: Charaktere, Items und die Slots, die beide miteinander verbinden.
+## 🏛️ Architektur: Datenbankstruktur
 
-1. Charakter-Schema
-Spieler und Monster werden über eine SINGLE_TABLE-Vererbungsstrategie in einer zentralen CHARACTER-Tabelle verwaltet. Dies ermöglicht eine einfache Referenzierung von beliebigen Charakteren im Spiel.
+Das Herzstück des Backends ist eine relationale Datenbank, die den gesamten Spielzustand verwaltet. Die Struktur ist in drei Hauptbereiche unterteilt: **Charaktere**, **Items** und die **Slots**, die beide miteinander verbinden.
 
-Code-Snippet
+### Charakter-Schema
 
+Spieler und Monster werden über eine `SINGLE_TABLE`-Vererbungsstrategie in einer zentralen `CHARACTER`-Tabelle verwaltet. Dies ermöglicht eine einfache Referenzierung von beliebigen Charakteren im Spiel.
+
+```mermaid
 classDiagram
     Character <|-- Player
     Character <|-- Monster
@@ -47,20 +50,17 @@ classDiagram
     Player "1" -- "1" PlayerWallet
     Player "1" -- "1..*" PlayerRole
     Player "1" -- "1..*" CurrencyTransaction
+```
+* **CHARACTER:** Die Basistabelle für alle lebenden Entitäten.
+* **PLAYER_ROLES:** Speichert die Berechtigungen eines Spielers (z.B. ROLE_USER, ROLE_ADMIN).
+* **PLAYER_WALLET:** Verwaltet die Spiel- und Echtgeld-Währungen eines Spielers.
+* **CURRENCY_TRANSACTION:** Ein detailliertes Logbuch jeder Währungstransaktion zur Nachverfolgung.
 
-CHARACTER: Die Basistabelle für alle lebenden Entitäten.
+### Item-Schema
 
-PLAYER_ROLES: Speichert die Berechtigungen eines Spielers (z.B. ROLE_USER, ROLE_ADMIN).
-
-PLAYER_WALLET: Verwaltet die Spiel- und Echtgeld-Währungen eines Spielers.
-
-CURRENCY_TRANSACTION: Ein detailliertes Logbuch jeder Währungstransaktion zur Nachverfolgung.
-
-2. Item-Schema
 Ähnlich wie bei den Charakteren wird für alle Items eine SINGLE_TABLE-Vererbungsstrategie verwendet. Das macht das System extrem flexibel für zukünftige Item-Typen.
 
-Code-Snippet
-
+```mermaid
 classDiagram
     Item <|-- EquipmentItem
     Item <|-- ConsumableItem
@@ -84,19 +84,18 @@ classDiagram
     }
 
     EquipmentItem "1" -- "1..*" ItemStat
-ITEM: Die zentrale Tabelle für alle Item-Blaupausen.
+```
+* **ITEM:** Die zentrale Tabelle für alle Item-Blaupausen.
+* **ITEM_STATS:** Eine separate Tabelle zur Speicherung flexibler Stats für Ausrüstungsgegenstände.
 
-ITEM_STATS: Eine separate Tabelle zur Speicherung flexibler Stats für Ausrüstungsgegenstände.
-
-3. Slot-Schema (Das Bindeglied)
+### Slot-Schema (Das Bindeglied)
 Um die Items mit den Spielern (über Inventar und Ausrüstung) zu verbinden, wird eine JOINED-Vererbungsstrategie verwendet. Dies sorgt für eine saubere und normalisierte Datenbankstruktur.
 
-Code-Snippet
-
+```mermaid
 classDiagram
     ItemSlot <|-- InventorySlot
     ItemSlot <|-- EquipmentSlot
-
+    
     class ItemSlot {
         +LONG id (PK)
         +Item item (FK)
@@ -116,21 +115,17 @@ classDiagram
     Inventory "1" -- "1..*" InventorySlot
     Equipment "1" -- "1..*" EquipmentSlot
     ItemSlot "1" -- "0..1" Item
-ITEM_SLOT: Die Basis-Tabelle, die einen Slot als Konzept definiert.
+```
+* **ITEM_SLOT:** Die Basis-Tabelle, die einen Slot als Konzept definiert.
+* **INVENTORY_SLOT:** Eine spezialisierte Tabelle, die einen Platz im Inventar eines Spielers repräsentiert.
+* **EQUIPMENT_SLOT:** Eine spezialisierte Tabelle, die einen Ausrüstungsplatz eines Spielers repräsentiert.
 
-INVENTORY_SLOT: Eine spezialisierte Tabelle, die einen Platz im Inventar eines Spielers repräsentiert.
+---
 
-EQUIPMENT_SLOT: Eine spezialisierte Tabelle, die einen Ausrüstungsplatz eines Spielers repräsentiert.
-
-🛠️ Setup & Start
-Stellen Sie sicher, dass Java (Version X) und Maven installiert sind.
-
-Klonen Sie das Repository: git clone ...
-
-Navigieren Sie in das Projektverzeichnis.
-
-Starten Sie die Anwendung mit: ./mvnw spring-boot:run
-
-Der Server läuft standardmäßig auf http://localhost:8080.
-
-Die H2-Datenbankkonsole ist unter http://localhost:8080/h2-console erreichbar.
+# 🛠️ Setup & Start
+1. Stellen Sie sicher, dass Java (Version 17 oder höher) und Maven installiert sind.
+2. Klonen Sie das Repository: git clone <repository-url>
+3. Navigieren Sie in das Projektverzeichnis: cd <projekt-ordner>
+4. Starten Sie die Anwendung mit: ./mvnw spring-boot:run
+5. Der Server läuft standardmäßig auf http://localhost:8080.
+6. Die H2-Datenbankkonsole ist unter http://localhost:8080/h2-console erreichbar.
