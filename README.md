@@ -119,3 +119,69 @@ classDiagram
 * **ITEM_SLOT:** Die Basis-Tabelle, die einen Slot als Konzept definiert.
 * **INVENTORY_SLOT:** Eine spezialisierte Tabelle, die einen Platz im Inventar eines Spielers repräsentiert.
 * **EQUIPMENT_SLOT:** Eine spezialisierte Tabelle, die einen Ausrüstungsplatz eines Spielers repräsentiert.
+---
+# Gesamtes InventarSystem
+
+```mermaid
+classDiagram
+    direction LR
+    class Character {
+        <<Abstract>>
+        +Long id (PK)
+        +String name
+        +int level
+        +int experiencePoints
+    }
+    class Player {
+        +String googleId
+        +Set~String~ roles
+    }
+    Character <|-- Player
+    class PlayerWallet {
+        +Long id (PK, FK)
+        +long gold
+        +long candy
+    }
+    class Equipment {
+        +Long id (PK)
+        +Map~EquipmentSlotEnum, EquipmentSlot~ slots
+    }
+    class Inventory {
+        +Long id (PK)
+        +int capacity
+        +List~InventorySlot~ slots
+    }
+    Player "1" -- "1" PlayerWallet : has
+    Player "1" -- "1" Equipment : has
+    Player "1" -- "1" Inventory : has
+    class ItemSlot {
+        <<Abstract>>
+        +Long id (PK)
+        +Item item
+    }
+    class EquipmentSlot {
+        +EquipmentSlotEnum slotEnum
+    }
+    class InventorySlot {
+        +int slotIndex
+        +int quantity
+    }
+    ItemSlot <|-- EquipmentSlot
+    ItemSlot <|-- InventorySlot
+    class Item {
+        <<Abstract>>
+        +Long id (PK)
+        +String name
+        +String description
+        +Rarity rarity
+        +String iconName
+    }
+    class EquipmentItem {
+         +EquipmentSlotEnum equipmentSlotEnum
+         +Map~String, Integer~ stats
+    }
+    Item <|-- EquipmentItem
+    Equipment "1" -- "0..*" EquipmentSlot : contains
+    Inventory "1" -- "0..*" InventorySlot : contains
+    ItemSlot "1" -- "0..1" Item : holds
+```
