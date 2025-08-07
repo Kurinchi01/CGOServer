@@ -1,15 +1,13 @@
 package com.Kuri01.Game.Server.Service;
 
 import com.Kuri01.Game.Server.DTO.InventorySlotDTO;
-import com.Kuri01.Game.Server.DTO.ItemDTO;
 import com.Kuri01.Game.Server.DTO.PlayerDTO;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.EquipmentItem;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.EquipmentSlotEnum;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Inventory;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Item;
 import com.Kuri01.Game.Server.Model.RPG.Player;
-import com.Kuri01.Game.Server.Model.RPG.Repository.PlayerRepository;
-import org.junit.jupiter.api.BeforeAll;
+import com.Kuri01.Game.Server.Repository.PlayerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

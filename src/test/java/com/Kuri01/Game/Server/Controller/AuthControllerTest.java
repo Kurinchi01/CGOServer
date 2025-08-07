@@ -3,7 +3,7 @@ package com.Kuri01.Game.Server.Controller;
 import com.Kuri01.Game.Server.Auth.GoogleLoginRequest;
 import com.Kuri01.Game.Server.Model.GoogleUserProfile;
 import com.Kuri01.Game.Server.Model.RPG.Player;
-import com.Kuri01.Game.Server.Model.RPG.Repository.PlayerRepository;
+import com.Kuri01.Game.Server.Repository.PlayerRepository;
 import com.Kuri01.Game.Server.Service.GoogleTokenValidator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

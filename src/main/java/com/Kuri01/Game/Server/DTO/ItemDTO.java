@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashMap;
 import java.util.Map;
 @Setter
 @Getter
@@ -18,9 +19,8 @@ public class ItemDTO {
 
     private String itemType;
 
-    private int quantity;
-    private EquipmentSlotEnum equipmentSlotEnum; // Nur für EquipmentItems relevant
-    private Map<String, Integer> stats;
+    private EquipmentSlotEnum equipmentSlotEnum;    // Nur für EquipmentItems relevant
+    private Map<String, Integer> stats;             // Nur für EquipmentItems relevant
     private String iconName;
 
 

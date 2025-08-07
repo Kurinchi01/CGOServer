@@ -1,12 +1,9 @@
 package com.Kuri01.Game.Server.Controller;
 
 import com.Kuri01.Game.Server.Auth.LoginResponse;
-import com.Kuri01.Game.Server.Config.JwtAuthenticationFilter;
-import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Inventory;
-import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Item;
 import com.Kuri01.Game.Server.Model.RPG.Player;
-import com.Kuri01.Game.Server.Model.RPG.Repository.ItemRepository;
-import com.Kuri01.Game.Server.Model.RPG.Repository.PlayerRepository;
+import com.Kuri01.Game.Server.Repository.ItemRepository;
+import com.Kuri01.Game.Server.Repository.PlayerRepository;
 import com.Kuri01.Game.Server.Service.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 // WICHTIG: Diese Annotation sorgt dafür, dass dieser Controller NUR im 'dev'-Profil existiert.
 // In der Produktionsumgebung wird er einfach ignoriert und ist nicht erreichbar.

@@ -6,8 +6,8 @@ import com.Kuri01.Game.Server.Model.RPG.ItemSystem.EquipmentItem;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.EquipmentSlotEnum;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Item;
 import com.Kuri01.Game.Server.Model.RPG.Player;
-import com.Kuri01.Game.Server.Model.RPG.Repository.ItemRepository;
-import com.Kuri01.Game.Server.Model.RPG.Repository.PlayerRepository;
+import com.Kuri01.Game.Server.Repository.ItemRepository;
+import com.Kuri01.Game.Server.Repository.PlayerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

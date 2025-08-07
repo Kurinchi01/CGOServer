@@ -33,7 +33,8 @@ public class Player extends Character implements UserDetails {
     @JsonManagedReference
     private Equipment equipment;
 
-    @OneToOne(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "wallet_id", referencedColumnName = "id")
     @JsonManagedReference
     private PlayerWallet playerWallet;
 
@@ -42,22 +43,19 @@ public class Player extends Character implements UserDetails {
     @Column(name = "role")
     private Set<String> roles = new HashSet<>();
 
-    private int experiencePoints;
-    private int level;
-
-    // Jeder Spieler hat genau ein Inventar.
-    // cascade = CascadeType.ALL: Wenn ein Spieler gelöscht wird, wird auch sein Inventar gelöscht.
-    // orphanRemoval = true: Wenn die Verknüpfung zum Inventar entfernt wird, wird es gelöscht.
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "inventory_id", referencedColumnName = "id")
     @JsonManagedReference
     private Inventory inventory;
 
+    private int experiencePoints;
+    private int level;
+
     public Player() {
         // Beim Erstellen eines neuen Spielers erstellen wir auch direkt ein leeres Inventar.
         super();
         this.inventory = new Inventory(this,20);
-        this.equipment = new Equipment();
+        this.equipment = new Equipment(this);
         this.playerWallet = new PlayerWallet(this);
     }
 

@@ -6,6 +6,7 @@ import com.Kuri01.Game.Server.Model.RPG.ItemSystem.EquipmentSlotEnum;
 import com.Kuri01.Game.Server.Model.RPG.Player;
 import com.Kuri01.Game.Server.Service.PlayerEquipmentService;
 import com.Kuri01.Game.Server.Service.PlayerService;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,9 @@ import org.springframework.web.bind.annotation.*;
  * wie das Abrufen von Profildaten oder das Managen der Ausrüstung.
  */
 @RestController
+@Slf4j /// <--- erzeugt ein Logger der mit log angesprochen werden kann
 @RequestMapping("/api/character")
-public class PlayerCharacterController {
-
-    private static final Logger logger = LoggerFactory.getLogger(PlayerCharacterController.class);
+public class PlayerCharacterController   {
 
     private final PlayerEquipmentService equipmentService;
     private final PlayerService playerService;
@@ -45,7 +45,7 @@ public class PlayerCharacterController {
         // können wir sie direkt aus dem "Principal"-Objekt der Authentifizierung casten.
         Player loggedInPlayer = (Player) authentication.getPrincipal();
 
-        logger.info("Spielerprofil für '{}' angefragt.", loggedInPlayer.getName());
+        log.info("Spielerprofil für '{}' angefragt.", loggedInPlayer.getName());
 
 
         // Kein extra Datenbank-Aufruf nötig! Wir haben bereits das vollständige Spieler-Objekt.
@@ -62,7 +62,7 @@ public class PlayerCharacterController {
     @PostMapping("/equip/{itemId}")
     public ResponseEntity<Equipment> equipItem(@PathVariable Long itemId, Authentication authentication) {
         Player loggedInPlayer = (Player) authentication.getPrincipal();
-        logger.info("Spieler '{}' versucht, Item {} auszurüsten.", loggedInPlayer.getName(), itemId);
+        log.info("Spieler '{}' versucht, Item {} auszurüsten.", loggedInPlayer.getName(), itemId);
 
         Equipment updatedEquipment = equipmentService.equipItem(loggedInPlayer.getId(), itemId);
         return ResponseEntity.ok(updatedEquipment);
@@ -78,7 +78,7 @@ public class PlayerCharacterController {
     @PostMapping("/unequip/{slot}")
     public ResponseEntity<Equipment> unequipItem(@PathVariable String slot, Authentication authentication) {
         Player loggedInPlayer = (Player) authentication.getPrincipal();
-        logger.info("Spieler '{}' versucht, Item aus Slot {} abzulegen.", loggedInPlayer.getName(), slot);
+        log.info("Spieler '{}' versucht, Item aus Slot {} abzulegen.", loggedInPlayer.getName(), slot);
 
         // Wandle den String aus der URL in unseren sicheren Enum-Typ um.
         EquipmentSlotEnum slotToUnequip = EquipmentSlotEnum.valueOf(slot.toUpperCase());

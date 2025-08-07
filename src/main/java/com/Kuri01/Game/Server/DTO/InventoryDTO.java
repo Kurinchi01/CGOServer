@@ -12,8 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class InventoryDTO {
-    private Long id;
-    private Player player;
+
     private int capacity; // Die Gesamtgröße des Inventars
     private List<InventorySlotDTO> inventorySlots; // Die Liste der belegten Slots
 

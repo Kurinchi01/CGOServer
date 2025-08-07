@@ -4,8 +4,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashMap;
+
 /**
- * Data Transfer Object für die Spielerdaten, die zum Start einer Runde benötigt werden.
+ * Data Transfer Object für die Spielerdaten
  */
 @Setter
 @Getter
@@ -24,5 +26,6 @@ public class PlayerDTO {
     private EquipmentDTO equipmentDTO;
     private InventoryDTO inventoryDTO;
     private PlayerWalletDTO playerWalletDTO;
+    private HashMap<Long, ItemDTO> itemBlueprints;
 
 }

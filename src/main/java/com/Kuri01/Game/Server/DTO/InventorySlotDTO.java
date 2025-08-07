@@ -11,11 +11,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class InventorySlotDTO {
     //von Oberklasse ItemSlot
-    private Long id;
-    private ItemDTO item;
+    private Long itemID;
 
     //von Unterklasse InventorySlot
     private int slotIndex;
-    private Inventory inventory;
+    private int quantity;
 
 }

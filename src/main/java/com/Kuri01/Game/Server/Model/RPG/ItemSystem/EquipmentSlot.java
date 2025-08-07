@@ -13,11 +13,12 @@ import lombok.Setter;
 public class EquipmentSlot extends ItemSlot {
 
     @ManyToOne
-    @JoinColumn(name = "equipment_id")
     @JsonBackReference
-    private Equipment equipment; // Gehört zum Equipment, nicht direkt zum Player
+    @JoinColumn(name = "equipment_id")
+    private Equipment equipment;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private EquipmentSlotEnum slotEnum;
 
     public EquipmentSlot(Equipment equipment, EquipmentSlotEnum slotEnum) {

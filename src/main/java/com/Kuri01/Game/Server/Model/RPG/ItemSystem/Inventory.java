@@ -1,7 +1,6 @@
 package com.Kuri01.Game.Server.Model.RPG.ItemSystem;
 
 import com.Kuri01.Game.Server.Model.RPG.Player;
-import com.Kuri01.Game.Server.Model.RPG.Repository.ItemRepository;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
@@ -24,7 +23,7 @@ public class Inventory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Verknüpfung zurück zum Spieler
+    // Die inverse Seite, verweist auf das 'inventory'-Feld im Player.
     @OneToOne(mappedBy = "inventory")
     @JsonBackReference
     private Player player;
@@ -44,6 +43,20 @@ public class Inventory {
 
             addSlot(new InventorySlot(i));
         }
+    }
+
+
+    //Kopie Konstruktor um eine Kopie und keine Refferenz zu erstellen
+    public Inventory(Inventory inventory) {
+        this.id = inventory.id;
+        this.player = inventory.player;
+        this.capacity = inventory.capacity;
+        this.slots = new ArrayList<>(capacity);
+        for (InventorySlot a : inventory.slots) {
+            InventorySlot newSlot = new InventorySlot(a);
+            this.addSlot(newSlot);
+        }
+
     }
 
 
@@ -82,10 +95,13 @@ public class Inventory {
         }
     }
 
+    /// @param item is nullable
     public void setItemToSlot(int slotIndex, Item item) {
-        if (item != null) {
-            this.slots.get(slotIndex).setItem(item);
-        }
+
+        this.slots.get(slotIndex).setItem(item);
+
     }
+
+
 }
 

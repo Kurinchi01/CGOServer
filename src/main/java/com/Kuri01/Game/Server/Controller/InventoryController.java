@@ -1,33 +1,55 @@
 package com.Kuri01.Game.Server.Controller;
 
- // Oder später ein eigener InventoryService
+// Oder später ein eigener InventoryService
+
+import com.Kuri01.Game.Server.DTO.Action.PlayerAction;
+import com.Kuri01.Game.Server.DTO.PlayerActionQueueDTO;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Item;
-import com.Kuri01.Game.Server.Service.GameService;
+import com.Kuri01.Game.Server.Model.RPG.Player;
+import com.Kuri01.Game.Server.Repository.EquipmentRepository;
+import com.Kuri01.Game.Server.Repository.InventoryRepository;
+import com.Kuri01.Game.Server.Repository.PlayerRepository;
+import com.Kuri01.Game.Server.Service.InventoryService;
+import com.Kuri01.Game.Server.Service.PlayerService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
- * REST-Controller für alle Aktionen, die das Inventar eines Spielers betreffen.
+ * REST-Controller für alle Aktionen, die das Inventar und das Equipment betreffen eines Spielers betreffen.
  */
+@Slf4j
+/// <--- erzeugt ein Logger der mit log angesprochen werden kann
 @RestController
 @RequestMapping("/api/inventory")
 public class InventoryController {
 
     // Für den Anfang kann der GameService diese Logik noch enthalten.
     // Später könnte man sie in einen eigenen InventoryService auslagern.
-    private final GameService gameService;
+    private final InventoryService inventoryService;
+    private final PlayerRepository playerRepository;
+    private final InventoryRepository inventoryRepository;
+    private final EquipmentRepository equipmentRepository;
 
     @Autowired
-    public InventoryController(GameService gameService) {
-        this.gameService = gameService;
+    public InventoryController(PlayerRepository playerRepository, InventoryRepository inventoryRepository, EquipmentRepository equipmentRepository) {
+        inventoryService = new InventoryService(playerRepository, inventoryRepository, equipmentRepository);
+        this.inventoryRepository = inventoryRepository;
+        this.playerRepository = playerRepository;
+        this.equipmentRepository = equipmentRepository;
     }
 
     /**
      * Endpunkt zum Öffnen einer Loot-Truhe aus dem Inventar eines Spielers.
      * Reagiert auf POST-Anfragen an z.B. /api/inventory/open-chest/55
+     *
      * @param inventoryChestId Die ID der Truhe im Inventar des Spielers.
      * @return Ein ResponseEntity, das eine Liste der erhaltenen Items enthält.
      */
@@ -36,7 +58,24 @@ public class InventoryController {
         // TODO: Spieler-ID aus der Authentifizierung holen
         Long playerId = 1L; // Platzhalter
 
-        List<Item> finalLoot = gameService.openChest(playerId, inventoryChestId);
+        List<Item> finalLoot = new ArrayList<>();
         return ResponseEntity.ok(finalLoot);
+    }
+
+
+    @PostMapping("/actions")
+    public ResponseEntity<?> reciveInventory(@RequestBody PlayerActionQueueDTO actions, Authentication authentication) {
+
+        try {
+            Player loggedInPlayer = (Player) authentication.getPrincipal();
+            List<PlayerAction> tmpPlayerActions = PlayerService.receivePlayerActionList(actions);
+            inventoryService.reciveInv(tmpPlayerActions, loggedInPlayer);
+
+            return ResponseEntity.noContent().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Der Spieler wurde nicht gefunden!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 }

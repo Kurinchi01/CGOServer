@@ -19,5 +19,10 @@ public abstract class ItemSlot { // Machen Sie die Basisklasse abstrakt
     @ManyToOne
     private Item item;
 
+    //Kopie Konstruktor um eine Kopie und keine Refferenz zu erstellen
+    public ItemSlot(ItemSlot itemSlot) {
+        this.item = itemSlot.getItem() != null ? new Item(itemSlot.getItem()) : null;
+        this.id = itemSlot.getId();
+    }
 
 }
