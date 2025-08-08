@@ -68,8 +68,8 @@ public class InventoryController {
 
         try {
             Player loggedInPlayer = (Player) authentication.getPrincipal();
-            List<PlayerAction> tmpPlayerActions = PlayerService.receivePlayerActionList(actions);
-            inventoryService.reciveInv(tmpPlayerActions, loggedInPlayer);
+//            List<PlayerAction> tmpPlayerActions = PlayerService.receivePlayerActionList(actions);
+//            inventoryService.reciveInv(tmpPlayerActions, loggedInPlayer);
 
             return ResponseEntity.noContent().build();
         } catch (NoSuchElementException e) {

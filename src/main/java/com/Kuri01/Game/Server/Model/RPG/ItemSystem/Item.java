@@ -8,11 +8,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE) // Erlaubt uns später, spezielle Item-Typen zu haben
-@DiscriminatorColumn(name = "item_type", discriminatorType = DiscriminatorType.STRING)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -33,6 +33,16 @@ public class Item {
 
     @Column(nullable = false)
     private String iconName;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "equipment_slot")
+    private EquipmentSlotEnum equipmentSlotEnum;
+
+    @ElementCollection(fetch = FetchType.EAGER) // EAGER sorgt dafür, dass die Stats immer direkt mit dem Item geladen werden.
+    @CollectionTable(name = "item_stats", joinColumns = @JoinColumn(name = "item_id")) // Definiert die Tabelle für die Stats und die Verknüpfung zur item-Tabelle.
+    @MapKeyColumn(name = "stat_name")  // Name der Spalte für den Schlüssel der Map (z.B. "ATTACK").
+    @Column(name = "stat_value")       // Name der Spalte für den Wert der Map (z.B. 10).
+    private Map<String, Integer> stats = new HashMap<>();
 
 
     //Kopie Konstruktor um eine Kopie und keine Refferenz zu erstellen
@@ -56,7 +66,7 @@ public class Item {
         Item item = (Item) o;
 
         // 4. Vergleiche alle relevanten Felder
-        return id == item.id &&
+        return Objects.equals(id, item.id) &&
                 Objects.equals(name, item.name) &&
                 Objects.equals(description, item.description) &&
                 Objects.equals(rarity, item.rarity) &&

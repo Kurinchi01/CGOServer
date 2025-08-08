@@ -59,14 +59,14 @@ public class PlayerCharacterController   {
      * @param authentication Das Objekt des eingeloggten Spielers.
      * @return Das aktualisierte Equipment-Objekt des Spielers.
      */
-    @PostMapping("/equip/{itemId}")
-    public ResponseEntity<Equipment> equipItem(@PathVariable Long itemId, Authentication authentication) {
-        Player loggedInPlayer = (Player) authentication.getPrincipal();
-        log.info("Spieler '{}' versucht, Item {} auszurüsten.", loggedInPlayer.getName(), itemId);
-
-        Equipment updatedEquipment = equipmentService.equipItem(loggedInPlayer.getId(), itemId);
-        return ResponseEntity.ok(updatedEquipment);
-    }
+//    @PostMapping("/equip/{itemId}")
+//    public ResponseEntity<Equipment> equipItem(@PathVariable Long itemId, Authentication authentication) {
+//        Player loggedInPlayer = (Player) authentication.getPrincipal();
+//        log.info("Spieler '{}' versucht, Item {} auszurüsten.", loggedInPlayer.getName(), itemId);
+//
+//        Equipment updatedEquipment = equipmentService.equipItem(loggedInPlayer.getId(), itemId);
+//        return ResponseEntity.ok(updatedEquipment);
+//    }
 
     /**
      * Legt ein Item von einem bestimmten Slot zurück ins Inventar.

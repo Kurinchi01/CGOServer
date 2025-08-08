@@ -16,12 +16,12 @@ public class ItemDTO {
     private String name;
     private String description;
     private Rarity rarity;
+    private String iconName;
 
-    private String itemType;
 
     private EquipmentSlotEnum equipmentSlotEnum;    // Nur für EquipmentItems relevant
     private Map<String, Integer> stats;             // Nur für EquipmentItems relevant
-    private String iconName;
+
 
 
 

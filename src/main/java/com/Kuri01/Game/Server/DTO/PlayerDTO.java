@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Data Transfer Object für die Spielerdaten
@@ -26,6 +27,6 @@ public class PlayerDTO {
     private EquipmentDTO equipmentDTO;
     private InventoryDTO inventoryDTO;
     private PlayerWalletDTO playerWalletDTO;
-    private HashMap<Long, ItemDTO> itemBlueprints;
+    private Map<Long, ItemDTO> itemBlueprints;
 
 }

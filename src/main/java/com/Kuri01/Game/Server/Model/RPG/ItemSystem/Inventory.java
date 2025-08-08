@@ -60,16 +60,16 @@ public class Inventory {
     }
 
 
-    public boolean addItem(EquipmentItem newItem) {
-        int index = findFirstEmptySlotIndex();
-        if (index != -1) {
-            slots.get(index).setItem(newItem);
-            return true;
-        } else {
-            System.out.println("Inventar ist voll. Item konnte nicht hinzugefügt werden.");
-            return false;
-        }
-    }
+//    public boolean addItem(EquipmentItem newItem) {
+//        int index = findFirstEmptySlotIndex();
+//        if (index != -1) {
+//            slots.get(index).setItem(newItem);
+//            return true;
+//        } else {
+//            System.out.println("Inventar ist voll. Item konnte nicht hinzugefügt werden.");
+//            return false;
+//        }
+//    }
 
     private int findFirstEmptySlotIndex() {
         for (int i = 0; i < slots.size(); i++) {

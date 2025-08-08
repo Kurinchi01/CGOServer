@@ -2,11 +2,11 @@ package com.Kuri01.Game.Server.Service;
 
 import com.Kuri01.Game.Server.DTO.InventorySlotDTO;
 import com.Kuri01.Game.Server.DTO.PlayerDTO;
-import com.Kuri01.Game.Server.Model.RPG.ItemSystem.EquipmentItem;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.EquipmentSlotEnum;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Inventory;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Item;
 import com.Kuri01.Game.Server.Model.RPG.Player;
+import com.Kuri01.Game.Server.Repository.ItemRepository;
 import com.Kuri01.Game.Server.Repository.PlayerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,11 +27,16 @@ class PlayerServiceTest {
 
     @Mock // Erstellt einen Mock für das Repository. Es wird keine echte DB verwendet.
     private PlayerRepository playerRepository;
+    @Mock
+    private ItemRepository itemRepository;
 
     @InjectMocks // Erstellt eine ECHTE Instanz des PlayerService und injiziert die Mocks (@Mock) hinein.
     private PlayerService playerService;
 
     private Player testPlayer;
+    private Item sword;
+    private Item tmp;
+    private List<Item> itemList = new ArrayList<>();
 
     // Diese Methode wird vor JEDEM Test ausgeführt, um saubere Testdaten zu erstellen.
     @BeforeEach
@@ -44,7 +51,7 @@ class PlayerServiceTest {
         testPlayer.setAttack(20f);
 
         // Füge ein ausgerüstetes Item hinzu
-        EquipmentItem sword = new EquipmentItem();
+        sword = new Item();
         sword.setId(101L);
         sword.setName("Stahlschwert");
         sword.setIconName("sword_steel");
@@ -55,24 +62,19 @@ class PlayerServiceTest {
 
         // Füge Items zum Inventar hinzu
         Inventory inventory = testPlayer.getInventory();
-        Item potion = new Item(); // Annahme: Item kann direkt erstellt werden
-        potion.setId(201L);
-        potion.setName("Heiltrank");
-        potion.setIconName("potion_health");
 
-        EquipmentItem tmp = new EquipmentItem();
+
+        tmp = new Item();
         tmp.setId(202L);
         tmp.setName("Basic Helmet");
         tmp.setIconName("BasicHelmet");
-        tmp.setQuantity(1);
-        tmp.getStats().put("DEF",5);
+        tmp.getStats().put("DEF", 5);
         tmp.setEquipmentSlotEnum(EquipmentSlotEnum.HELMET);
 
         // Lege den Trank auf Platz 3 mit der Menge 5
-        inventory.getSlots().get(3).setItem(potion);
-        inventory.getSlots().get(3).setQuantity(5);
-
         inventory.getSlots().get(5).setItem(tmp);
+        itemList.add(tmp);
+        itemList.add(sword);
     }
 
     @Test
@@ -81,6 +83,9 @@ class PlayerServiceTest {
 
         // Programmiere den Mock: Wenn findByGoogleId aufgerufen wird, gib unseren Test-Spieler zurück.
         when(playerRepository.findByGoogleId("google-123")).thenReturn(Optional.of(testPlayer));
+        when(itemRepository.findById(101L)).thenReturn(Optional.of(sword));
+        when(itemRepository.findById(202L)).thenReturn(Optional.of(tmp));
+        when(itemRepository.findAll()).thenReturn(itemList);
 
         // ========== ACT (Ausführen) ==========
 
@@ -99,26 +104,27 @@ class PlayerServiceTest {
         // 2. Überprüfe das Equipment
         assertNotNull(resultDTO.getEquipmentDTO());
         assertNotNull(resultDTO.getEquipmentDTO().getEquipmentSlots().get(EquipmentSlotEnum.WEAPON));
-        assertEquals("Stahlschwert", resultDTO.getEquipmentDTO().getEquipmentSlots().get(EquipmentSlotEnum.WEAPON).getItem().getName());
-        assertEquals(15, resultDTO.getEquipmentDTO().getEquipmentSlots().get(EquipmentSlotEnum.WEAPON).getItem().getStats().get("ATTACK"));
-        assertNull(resultDTO.getEquipmentDTO().getEquipmentSlots().get(EquipmentSlotEnum.HELMET).getItem(), "Helm-Slot sollte leer sein.");
+        Item searchedItem = itemRepository.findById(resultDTO.getEquipmentDTO().getEquipmentSlots().get(EquipmentSlotEnum.WEAPON).getItemID()).orElseThrow();
+
+        assertEquals("Stahlschwert", searchedItem.getName());
+        assertEquals(15, searchedItem.getStats().get("ATTACK"));
+
+        assertNull(resultDTO.getEquipmentDTO().getEquipmentSlots().get(EquipmentSlotEnum.HELMET).getItemID(), "Helm-Slot sollte leer sein.");
 
         // 3. Überprüfe das Inventar
         assertNotNull(resultDTO.getInventoryDTO().getInventorySlots());
         // Der Mapper sollte nur belegte Slots umwandeln
 
         // Überprüfe das eine Item im Detail
-        InventorySlotDTO inventoryItemDTO = resultDTO.getInventoryDTO().getInventorySlots().get(3);
-        assertEquals(201L, inventoryItemDTO.getItem().getId());
-        assertEquals("Heiltrank", inventoryItemDTO.getItem().getName());
-        assertEquals(1, inventoryItemDTO.getItem().getQuantity());
 
-        inventoryItemDTO = resultDTO.getInventoryDTO().getInventorySlots().get(5);
-        assertEquals(202L, inventoryItemDTO.getItem().getId());
-        assertEquals("Basic Helmet", inventoryItemDTO.getItem().getName());
-        assertEquals(1, inventoryItemDTO.getItem().getQuantity());
-        assertEquals(EquipmentSlotEnum.HELMET, inventoryItemDTO.getItem().getEquipmentSlotEnum());
-        assertEquals(5, inventoryItemDTO.getItem().getStats().get("DEF"));
+        InventorySlotDTO inventoryItemDTO = resultDTO.getInventoryDTO().getInventorySlots().get(5);
+        searchedItem = itemRepository.findById(resultDTO.getInventoryDTO().getInventorySlots().get(5).getItemID()).orElseThrow();
+
+        assertEquals(202L, searchedItem.getId());
+        assertEquals("Basic Helmet", searchedItem.getName());
+        assertEquals(1, inventoryItemDTO.getQuantity());
+        assertEquals(EquipmentSlotEnum.HELMET, searchedItem.getEquipmentSlotEnum());
+        assertEquals(5, searchedItem.getStats().get("DEF"));
         assertEquals(5, inventoryItemDTO.getSlotIndex());
 
         // Wichtig: Der Slot-Index muss korrekt gemappt werden
