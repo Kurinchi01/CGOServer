@@ -1,9 +1,10 @@
 package com.Kuri01.Game.Server.Service;
 
-import com.Kuri01.Game.Server.DTO.Action.EquipAction;
-import com.Kuri01.Game.Server.DTO.Action.PlayerAction;
-import com.Kuri01.Game.Server.DTO.Action.SwapInvAction;
-import com.Kuri01.Game.Server.DTO.Action.UnequipAction;
+import com.Kuri01.Game.Server.DTOMapper.InventoryMapper;
+import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Action.EquipInventoryAction;
+import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Action.PlayerInventoryAction;
+import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Action.SwapInvInventoryAction;
+import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Action.UnequipInventoryAction;
 import com.Kuri01.Game.Server.Exceptions.SwapFailException;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.*;
 import com.Kuri01.Game.Server.Model.RPG.Player;
@@ -11,8 +12,7 @@ import com.Kuri01.Game.Server.Repository.EquipmentRepository;
 import com.Kuri01.Game.Server.Repository.InventoryRepository;
 import com.Kuri01.Game.Server.Repository.PlayerRepository;
 import lombok.Getter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,30 +22,33 @@ import java.util.Objects;
 
 @Service
 @Getter
+@Slf4j
 public class InventoryService {
     private final PlayerRepository playerRepository;
     private final InventoryRepository inventoryRepository;
     private final EquipmentRepository equipmentRepository;
-    private static final Logger logger = LoggerFactory.getLogger(InventoryService.class);
+    private InventoryMapper inventoryMapper;
+
 
     @Autowired
-    public InventoryService(PlayerRepository playerRepository, InventoryRepository inventoryRepository, EquipmentRepository equipmentRepository) {
-        this.inventoryRepository = inventoryRepository;
+    public InventoryService(PlayerRepository playerRepository, InventoryMapper inventoryMapper) {
+        this.inventoryRepository = inventoryMapper.getInventoryRepository();
         this.playerRepository = playerRepository;
-        this.equipmentRepository = equipmentRepository;
+        this.equipmentRepository = inventoryMapper.getEquipmentRepository();
+        this.inventoryMapper = inventoryMapper;
     }
 
     @Transactional
-    public void reciveInv(List<PlayerAction> actions, Player player) {
+    public void receiveIn(List<PlayerInventoryAction> actions, Player player) {
 
 
         Inventory inventoryCopy = inventoryRepository.findByPlayer(player).orElseThrow();
         Equipment equipmentCopy = equipmentRepository.findByPlayer(player).orElseThrow();
 
-        for (PlayerAction a : actions) {
+        for (PlayerInventoryAction a : actions) {
 
             //Aus Inv ins Inv Verschieben
-            if (a instanceof SwapInvAction b) {
+            if (a instanceof SwapInvInventoryAction b) {
 
                 InventorySlot sourceSlot = b.getSourceSlot();
                 InventorySlot targetSlot = b.getTargetSlot();
@@ -65,15 +68,15 @@ public class InventoryService {
                 if (sourceItemsMatch && targetItemsMatch) {
                     // ERFOLGSFALL: Beide Slots auf dem Server entsprechen dem, was der Client erwartet hat.
                     swapItems(inventoryCopy, serverSourceInventorySlot, serverTargetInventorySlot);
-                    logger.info("Swap-Validierung erfolgreich und durchgeführt.");
+                    log.info("Swap-Validierung erfolgreich und durchgeführt.");
                 } else {
                     // FEHLERFALL: Der Zustand hat sich geändert, seit der Client die Aktion gestartet hat.
-                    logger.warn("Swap-Validierung fehlgeschlagen: Client- und Server-Zustand stimmen nicht überein.");
+                    log.warn("Swap-Validierung fehlgeschlagen: Client- und Server-Zustand stimmen nicht überein.");
                     throw new SwapFailException("Aktion konnte nicht ausgeführt werden, da sich das Inventar geändert hat.");
                 }
             }
 
-            if (a instanceof EquipAction b) {
+            if (a instanceof EquipInventoryAction b) {
 
                 InventorySlot sourceInventorySlot = b.getSourceInventorySlot();
                 EquipmentSlot targetEquipmentSlot = b.getTargetEquipmentSlot();
@@ -92,17 +95,17 @@ public class InventoryService {
 
                 if (sourceItemsMatch && targetItemsMatch) {
                     // ERFOLGSFALL: Beide Slots auf dem Server entsprechen dem, was der Client erwartet hat.
-                    equipItem(inventoryCopy,serverSourceInventorySlot, serverTargetEquipmentSlot);
-                    logger.info("Equip-Validierung erfolgreich und durchgeführt.");
+                    equipItem(inventoryCopy, serverSourceInventorySlot, serverTargetEquipmentSlot);
+                    log.info("Equip-Validierung erfolgreich und durchgeführt.");
                 } else {
                     // FEHLERFALL: Der Zustand hat sich geändert, seit der Client die Aktion gestartet hat.
-                    logger.warn("Equip-Validierung fehlgeschlagen: Client- und Server-Zustand stimmen nicht überein.");
+                    log.warn("Equip-Validierung fehlgeschlagen: Client- und Server-Zustand stimmen nicht überein.");
                     throw new SwapFailException("Aktion konnte nicht ausgeführt werden, da sich das Inventar geändert hat.");
                 }
 
             }
 
-            if (a instanceof UnequipAction b) {
+            if (a instanceof UnequipInventoryAction b) {
                 EquipmentSlot sourceEquipmentSlot = b.getSourceEquipmentSlot();
                 InventorySlot targetInventorySlot = b.getTargetInventorySlot();
 
@@ -120,11 +123,11 @@ public class InventoryService {
 
                 if (sourceItemsMatch && targetItemsMatch) {
                     // ERFOLGSFALL: Beide Slots auf dem Server entsprechen dem, was der Client erwartet hat.
-                    unqeuipItem(serverSourceEquipmentSlot, servertargetInventorySlot);
-                    logger.info("Unequip-Validierung erfolgreich und durchgeführt.");
+                    unequipItem(serverSourceEquipmentSlot, servertargetInventorySlot);
+                    log.info("Unequip-Validierung erfolgreich und durchgeführt.");
                 } else {
                     // FEHLERFALL: Der Zustand hat sich geändert, seit der Client die Aktion gestartet hat.
-                    logger.warn("Unequip-Validierung fehlgeschlagen: Client- und Server-Zustand stimmen nicht überein.");
+                    log.warn("Unequip-Validierung fehlgeschlagen: Client- und Server-Zustand stimmen nicht überein.");
                     throw new SwapFailException("Aktion konnte nicht ausgeführt werden, da sich das Inventar geändert hat.");
                 }
             }
@@ -148,6 +151,7 @@ public class InventoryService {
 
     }
 
+    @Transactional
     public void equipItem(Inventory inventory, InventorySlot sourceSlot, EquipmentSlot targetSlot) {
         Item tmpItem = targetSlot.getItem();
 
@@ -161,7 +165,8 @@ public class InventoryService {
 
     }
 
-    public void unqeuipItem(EquipmentSlot sourceSlot, InventorySlot targetSlot) {
+    @Transactional
+    public void unequipItem(EquipmentSlot sourceSlot, InventorySlot targetSlot) {
         Item tmpItem = targetSlot.getItem();
 
         targetSlot.setItem(sourceSlot.getItem());
@@ -172,4 +177,6 @@ public class InventoryService {
         else
             sourceSlot.setItem(null);
     }
+
+
 }

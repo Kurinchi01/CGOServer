@@ -2,15 +2,15 @@ package com.Kuri01.Game.Server.Controller;
 
 // Oder später ein eigener InventoryService
 
-import com.Kuri01.Game.Server.DTO.Action.PlayerAction;
 import com.Kuri01.Game.Server.DTO.PlayerActionQueueDTO;
+import com.Kuri01.Game.Server.DTOMapper.InventoryMapper;
+import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Action.PlayerInventoryAction;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Item;
 import com.Kuri01.Game.Server.Model.RPG.Player;
 import com.Kuri01.Game.Server.Repository.EquipmentRepository;
 import com.Kuri01.Game.Server.Repository.InventoryRepository;
 import com.Kuri01.Game.Server.Repository.PlayerRepository;
 import com.Kuri01.Game.Server.Service.InventoryService;
-import com.Kuri01.Game.Server.Service.PlayerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,13 +37,16 @@ public class InventoryController {
     private final PlayerRepository playerRepository;
     private final InventoryRepository inventoryRepository;
     private final EquipmentRepository equipmentRepository;
+    private final InventoryMapper inventoryMapper;
 
     @Autowired
     public InventoryController(PlayerRepository playerRepository, InventoryRepository inventoryRepository, EquipmentRepository equipmentRepository) {
-        inventoryService = new InventoryService(playerRepository, inventoryRepository, equipmentRepository);
+
         this.inventoryRepository = inventoryRepository;
         this.playerRepository = playerRepository;
         this.equipmentRepository = equipmentRepository;
+        this.inventoryMapper = new InventoryMapper(inventoryRepository, equipmentRepository);
+        inventoryService = new InventoryService(playerRepository, inventoryMapper);
     }
 
     /**
@@ -63,13 +66,14 @@ public class InventoryController {
     }
 
 
-    @PostMapping("/actions")
+    @PostMapping("/action/inventory")
     public ResponseEntity<?> reciveInventory(@RequestBody PlayerActionQueueDTO actions, Authentication authentication) {
 
         try {
             Player loggedInPlayer = (Player) authentication.getPrincipal();
-//            List<PlayerAction> tmpPlayerActions = PlayerService.receivePlayerActionList(actions);
-//            inventoryService.reciveInv(tmpPlayerActions, loggedInPlayer);
+            List<PlayerInventoryAction> tmpPlayerActions = inventoryMapper.createPlayerInventoryActionListFromDTO(actions, loggedInPlayer);
+
+            inventoryService.receiveIn(tmpPlayerActions, loggedInPlayer);
 
             return ResponseEntity.noContent().build();
         } catch (NoSuchElementException e) {
