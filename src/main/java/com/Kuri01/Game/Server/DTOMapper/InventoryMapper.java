@@ -1,6 +1,6 @@
 package com.Kuri01.Game.Server.DTOMapper;
 
-import com.Kuri01.Game.Server.DTO.*;
+import com.Kuri01.Game.Server.DTO.RPG.*;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.*;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Action.EquipInventoryAction;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Action.PlayerInventoryAction;

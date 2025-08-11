@@ -1,6 +1,6 @@
 package com.Kuri01.Game.Server.Service;
 
-import com.Kuri01.Game.Server.Model.GoogleUserProfile;
+import com.Kuri01.Game.Server.DTO.GoogleUserProfile;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import jakarta.annotation.PostConstruct;

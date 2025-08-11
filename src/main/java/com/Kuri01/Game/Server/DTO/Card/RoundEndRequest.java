@@ -1,5 +1,5 @@
-package com.Kuri01.Game.Server.Model;
-import com.Kuri01.Game.Server.Model.Cards.Move;
+package com.Kuri01.Game.Server.DTO.Card;
+import com.Kuri01.Game.Server.Model.Cards.CardMove;
 
 import java.util.List;
 /**
@@ -9,6 +9,6 @@ import java.util.List;
  */
 public record RoundEndRequest(
         RoundOutcome outcome,
-        List<Move> movesLog,
+        List<CardMove> movesLog,
         double timeTaken
 ) {}

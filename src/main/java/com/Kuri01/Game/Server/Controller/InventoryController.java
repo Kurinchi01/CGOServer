@@ -2,14 +2,9 @@ package com.Kuri01.Game.Server.Controller;
 
 // Oder später ein eigener InventoryService
 
-import com.Kuri01.Game.Server.DTO.PlayerActionQueueDTO;
-import com.Kuri01.Game.Server.DTOMapper.InventoryMapper;
-import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Action.PlayerInventoryAction;
+import com.Kuri01.Game.Server.DTO.RPG.PlayerActionQueueDTO;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Item;
 import com.Kuri01.Game.Server.Model.RPG.Player;
-import com.Kuri01.Game.Server.Repository.EquipmentRepository;
-import com.Kuri01.Game.Server.Repository.InventoryRepository;
-import com.Kuri01.Game.Server.Repository.PlayerRepository;
 import com.Kuri01.Game.Server.Service.InventoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

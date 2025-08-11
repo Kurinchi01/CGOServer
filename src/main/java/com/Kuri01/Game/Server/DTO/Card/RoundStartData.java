@@ -1,4 +1,4 @@
-package com.Kuri01.Game.Server.Model;
+package com.Kuri01.Game.Server.DTO.Card;
 
 import com.Kuri01.Game.Server.Model.Cards.Card;
 import com.Kuri01.Game.Server.Model.RPG.Monster;
@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import java.util.List;
 
-// Dies ist KEINE @Entity, da wir es nur als Datenpaket zum Senden verwenden.
 @Getter
 @Setter
 public class RoundStartData {

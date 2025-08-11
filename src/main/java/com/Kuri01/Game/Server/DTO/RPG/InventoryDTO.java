@@ -1,6 +1,5 @@
-package com.Kuri01.Game.Server.DTO;
+package com.Kuri01.Game.Server.DTO.RPG;
 
-import com.Kuri01.Game.Server.Model.RPG.Player;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

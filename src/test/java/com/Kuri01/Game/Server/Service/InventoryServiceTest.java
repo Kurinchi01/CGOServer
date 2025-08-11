@@ -1,6 +1,6 @@
 package com.Kuri01.Game.Server.Service;
 
-import com.Kuri01.Game.Server.DTO.PlayerActionQueueDTO;
+import com.Kuri01.Game.Server.DTO.RPG.PlayerActionQueueDTO;
 import com.Kuri01.Game.Server.DTOMapper.InventoryMapper;
 import com.Kuri01.Game.Server.Exceptions.SwapFailException;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.*;

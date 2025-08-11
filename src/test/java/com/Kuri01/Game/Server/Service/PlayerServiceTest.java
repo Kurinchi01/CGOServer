@@ -1,7 +1,7 @@
 package com.Kuri01.Game.Server.Service;
 
-import com.Kuri01.Game.Server.DTO.InventorySlotDTO;
-import com.Kuri01.Game.Server.DTO.PlayerDTO;
+import com.Kuri01.Game.Server.DTO.RPG.InventorySlotDTO;
+import com.Kuri01.Game.Server.DTO.RPG.PlayerDTO;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.EquipmentSlotEnum;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Inventory;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Item;

@@ -1,4 +1,4 @@
-package com.Kuri01.Game.Server.Model;
+package com.Kuri01.Game.Server.DTO;
 
 /**
  * Ein unveränderliches Datenobjekt (DTO), das die wichtigsten Informationen

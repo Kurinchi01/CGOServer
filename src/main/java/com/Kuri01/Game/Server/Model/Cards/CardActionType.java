@@ -1,6 +1,6 @@
 package com.Kuri01.Game.Server.Model.Cards;
 
-public enum ActionType {
+public enum CardActionType {
     /**
      * Eine Karte wird vom Spielfeld auf den Ablagestapel gespielt.
      */

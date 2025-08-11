@@ -1,6 +1,8 @@
 package com.Kuri01.Game.Server.Service;
 
-import com.Kuri01.Game.Server.Model.*;
+import com.Kuri01.Game.Server.DTO.Card.RoundEndRequest;
+import com.Kuri01.Game.Server.DTO.Card.RoundOutcome;
+import com.Kuri01.Game.Server.DTO.Card.RoundStartData;
 
 import static org.mockito.Mockito.when;
 

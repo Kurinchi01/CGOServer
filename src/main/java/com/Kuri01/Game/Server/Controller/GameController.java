@@ -1,8 +1,8 @@
 package com.Kuri01.Game.Server.Controller;
 
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Item;
-import com.Kuri01.Game.Server.Model.RoundEndRequest;
-import com.Kuri01.Game.Server.Model.RoundStartData;
+import com.Kuri01.Game.Server.DTO.Card.RoundEndRequest;
+import com.Kuri01.Game.Server.DTO.Card.RoundStartData;
 import com.Kuri01.Game.Server.Service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

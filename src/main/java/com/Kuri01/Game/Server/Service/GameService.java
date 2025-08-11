@@ -1,8 +1,10 @@
 package com.Kuri01.Game.Server.Service;
 
-import com.Kuri01.Game.Server.Model.*;
+import com.Kuri01.Game.Server.DTO.Card.RoundEndRequest;
+import com.Kuri01.Game.Server.DTO.Card.RoundOutcome;
+import com.Kuri01.Game.Server.DTO.Card.RoundStartData;
 import com.Kuri01.Game.Server.Model.Cards.Card;
-import com.Kuri01.Game.Server.Model.Cards.Move;
+import com.Kuri01.Game.Server.Model.Cards.CardMove;
 import com.Kuri01.Game.Server.Model.RPG.*;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Item;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.LootChest;
@@ -233,17 +235,17 @@ public class GameService {
         return new LootResult(lootMessage, monsterRarity);
     }
 
-    private boolean validateMoves(List<Move> clientMoves, RoundStartData originalRound) {
+    private boolean validateMoves(List<CardMove> clientCardMoves, RoundStartData originalRound) {
         //Erstelle eine simulierte Spielumgebung mit dem Originalzustand
         List<Card> simTuckPile = new ArrayList<>(originalRound.getDeckCards());
         List<Card> simTriPeaksCards = new ArrayList<>(originalRound.getTriPeaksCards());
         Card simWasteCard = originalRound.getTopCard();
 
         // Gehe jeden vom Client gesendeten Zug durch
-        for (Move move : clientMoves) {
-            switch (move.action()) {
+        for (CardMove cardMove : clientCardMoves) {
+            switch (cardMove.action()) {
                 case PLAY_CARD:
-                    Card playedCard = move.card();
+                    Card playedCard = cardMove.card();
                     if (playedCard == null) return false; // Ungültiger Zug
 
                     // 1. Ist der Zug legal? (Passt die Karte auf die oberste Ablagekarte?)

@@ -1,10 +1,9 @@
-package com.Kuri01.Game.Server.DTO;
+package com.Kuri01.Game.Server.DTO.RPG;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
