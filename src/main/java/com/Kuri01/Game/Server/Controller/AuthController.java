@@ -4,7 +4,7 @@ import com.Kuri01.Game.Server.Auth.GoogleLoginRequest;
 import com.Kuri01.Game.Server.Auth.LoginResponse;
 import com.Kuri01.Game.Server.DTO.GoogleUserProfile;
 import com.Kuri01.Game.Server.Model.RPG.Player;
-import com.Kuri01.Game.Server.Repository.PlayerRepository;
+import com.Kuri01.Game.Server.Repository.RPG.PlayerRepository;
 import com.Kuri01.Game.Server.Service.GoogleTokenValidator;
 import com.Kuri01.Game.Server.Service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;

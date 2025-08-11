@@ -1,4 +1,4 @@
-package com.Kuri01.Game.Server.Model.Cards;
+package com.Kuri01.Game.Server.DTO.Card;
 
 public enum CardActionType {
     /**

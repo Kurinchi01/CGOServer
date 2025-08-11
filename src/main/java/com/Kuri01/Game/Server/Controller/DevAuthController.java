@@ -2,8 +2,8 @@ package com.Kuri01.Game.Server.Controller;
 
 import com.Kuri01.Game.Server.Auth.LoginResponse;
 import com.Kuri01.Game.Server.Model.RPG.Player;
-import com.Kuri01.Game.Server.Repository.ItemRepository;
-import com.Kuri01.Game.Server.Repository.PlayerRepository;
+import com.Kuri01.Game.Server.Repository.RPG.ItemRepository;
+import com.Kuri01.Game.Server.Repository.RPG.PlayerRepository;
 import com.Kuri01.Game.Server.Service.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

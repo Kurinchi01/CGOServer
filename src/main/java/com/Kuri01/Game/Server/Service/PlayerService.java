@@ -7,8 +7,8 @@ import com.Kuri01.Game.Server.DTOMapper.InventoryMapper;
 import com.Kuri01.Game.Server.Model.RPG.Currency.PlayerWallet;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.*;
 import com.Kuri01.Game.Server.Model.RPG.Player;
-import com.Kuri01.Game.Server.Repository.ItemRepository;
-import com.Kuri01.Game.Server.Repository.PlayerRepository;
+import com.Kuri01.Game.Server.Repository.RPG.ItemRepository;
+import com.Kuri01.Game.Server.Repository.RPG.PlayerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +31,7 @@ public class PlayerService {
     @Transactional(readOnly = true)
     public PlayerDTO getPlayerProfile(String googleId) {
         Player player = playerRepository.findByGoogleId(googleId).orElseThrow(() -> new IllegalArgumentException("Spieler nicht gefunden: " + googleId));
-        ;
+
 
         // Hier, innerhalb der Transaktion, mappen wir die Entity auf ein DTO.
         return createDTOFromPlayer(player);

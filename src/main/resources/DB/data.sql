@@ -1,3 +1,18 @@
+-- ===================================================================
+--  DATENBANK BEREINIGEN (NUR FÜR DIE ENTWICKLUNG)
+-- ===================================================================
+-- Leere nur die Tabellen, die variable Spielerdaten enthalten.
+-- Die 'pre_calculated_boards' Tabelle wird NICHT gelöscht.
+DELETE FROM inventory_slot;
+DELETE FROM equipment_slot;
+DELETE FROM item_slot;
+DELETE FROM player_roles;
+DELETE FROM currency_transaction;
+DELETE FROM player_wallet;
+DELETE FROM inventory;
+DELETE FROM equipment;
+DELETE FROM character WHERE character_type = 'PLAYER';
+
 -- ====================================================================================
 --  Items erstellen (Jetzt als eine einzige, flache Tabelle)
 -- ====================================================================================

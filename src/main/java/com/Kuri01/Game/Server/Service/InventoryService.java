@@ -9,9 +9,9 @@ import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Action.UnequipInventoryAction
 import com.Kuri01.Game.Server.Exceptions.SwapFailException;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.*;
 import com.Kuri01.Game.Server.Model.RPG.Player;
-import com.Kuri01.Game.Server.Repository.EquipmentRepository;
-import com.Kuri01.Game.Server.Repository.InventoryRepository;
-import com.Kuri01.Game.Server.Repository.PlayerRepository;
+import com.Kuri01.Game.Server.Repository.RPG.EquipmentRepository;
+import com.Kuri01.Game.Server.Repository.RPG.InventoryRepository;
+import com.Kuri01.Game.Server.Repository.RPG.PlayerRepository;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

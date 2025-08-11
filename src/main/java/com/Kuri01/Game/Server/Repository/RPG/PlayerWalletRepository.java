@@ -1,4 +1,4 @@
-package com.Kuri01.Game.Server.Repository;
+package com.Kuri01.Game.Server.Repository.RPG;
 
 import com.Kuri01.Game.Server.Model.RPG.Currency.PlayerWallet;
 

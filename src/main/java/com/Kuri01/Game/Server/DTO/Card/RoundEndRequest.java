@@ -1,5 +1,4 @@
 package com.Kuri01.Game.Server.DTO.Card;
-import com.Kuri01.Game.Server.Model.Cards.CardMove;
 
 import java.util.List;
 /**

@@ -1,4 +1,6 @@
-package com.Kuri01.Game.Server.Model.Cards;
+package com.Kuri01.Game.Server.DTO.Card;
+
+import com.Kuri01.Game.Server.Model.Cards.Card;
 
 /**
  * Repräsentiert einen einzelnen, vollständigen Zug, den ein Spieler ausführt.
