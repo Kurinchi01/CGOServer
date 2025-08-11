@@ -28,10 +28,6 @@ public class Equipment {
     private Map<EquipmentSlotEnum, EquipmentSlot> equipmentSlots = new HashMap<>();
 
     public Equipment() {
-        // Leerer Konstruktor für JPA
-    }
-
-    public Equipment(Player player) {
         this.player = player;
         // Erstelle beim Erstellen des Equipment-Sets für jeden Enum-Wert einen leeren Slot.
         for (EquipmentSlotEnum slotEnum : EquipmentSlotEnum.values()) {

@@ -33,8 +33,7 @@ public class Player extends Character implements UserDetails {
     @JsonManagedReference
     private Equipment equipment;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "wallet_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private PlayerWallet playerWallet;
 
@@ -54,9 +53,20 @@ public class Player extends Character implements UserDetails {
     public Player() {
         // Beim Erstellen eines neuen Spielers erstellen wir auch direkt ein leeres Inventar.
         super();
-        this.inventory = new Inventory(this,20);
-        this.equipment = new Equipment(this);
-        this.playerWallet = new PlayerWallet(this);
+        // 1. Erstelle die leeren Kind-Objekte
+        PlayerWallet newWallet = new PlayerWallet();
+        Equipment newEquipment = new Equipment();
+        Inventory newInventory = new Inventory(20); // Annahme: 20 Start-Slots
+
+        // 2. Setze die Rück-Referenz (sage dem Kind, wer sein Vater ist)
+        newWallet.setPlayer(this);
+        newEquipment.setPlayer(this);
+        newInventory.setPlayer(this);
+
+        // 3. Setze die Vorwärts-Referenz (sage dem Vater, wer seine Kinder sind)
+        this.playerWallet = newWallet;
+        this.equipment = newEquipment;
+        this.inventory = newInventory;
     }
 
     public void swapItemSlots(ItemSlot sourceSlot, ItemSlot targetSlot) {

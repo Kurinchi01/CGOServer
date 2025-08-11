@@ -23,6 +23,4 @@ public class ItemDTO {
     private Map<String, Integer> stats;             // Nur für EquipmentItems relevant
 
 
-
-
 }

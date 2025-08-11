@@ -24,14 +24,16 @@ public class DevAuthController {
     private final ItemRepository itemRepository;
 
     // Ein einfaches DTO für die Anfrage, kann als innere Klasse hier definiert werden.
-    public record DevLoginRequest(String username) {}
+    public record DevLoginRequest(String username) {
+    }
+
     private static final Logger logger = LoggerFactory.getLogger(DevAuthController.class);
 
     @Autowired
     public DevAuthController(PlayerRepository playerRepository, JwtService jwtService, ItemRepository itemRepository) {
         this.playerRepository = playerRepository;
         this.jwtService = jwtService;
-        this.itemRepository=itemRepository;
+        this.itemRepository = itemRepository;
     }
 
     /**
@@ -48,12 +50,10 @@ public class DevAuthController {
                     Player newPlayer = new Player();
                     newPlayer.setName(request.username());
                     // Setze eine Fake-Google-ID, damit das Feld nicht leer ist
-                    newPlayer.setGoogleId("dev-user-"+request.username());
+                    newPlayer.setGoogleId("dev-user-" + request.username());
                     newPlayer.setLevel(1);
                     newPlayer.getRoles().add("ROLE_USER");
 
-                    //Item tmpItem = itemRepository.findById(1L).orElse(null);
-                    //newPlayer.getInventory().setItemToSlot(0,tmpItem);
                     return playerRepository.save(newPlayer);
                 });
 

@@ -1,8 +1,6 @@
 package com.Kuri01.Game.Server.Model.RPG.ItemSystem;
 
 import com.Kuri01.Game.Server.Model.RPG.Rarity;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -21,12 +21,7 @@ public class PlayerWallet {
     @JsonBackReference
     private Player player;
 
-    private long gold = 2000; // Spielwährung
-    private long candy = 500; // Echtgeld-Währung
-
-    public PlayerWallet(Player player) {
-        this.player = player;
-    }
-
+    private Long gold = 2000L; // Spielwährung
+    private Long candy = 500L; // Echtgeld-Währung
 
 }

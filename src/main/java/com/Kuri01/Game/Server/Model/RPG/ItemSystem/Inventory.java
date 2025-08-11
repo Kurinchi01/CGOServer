@@ -18,7 +18,6 @@ import java.util.List;
 @NoArgsConstructor
 public class Inventory {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,8 +35,8 @@ public class Inventory {
     @JsonManagedReference
     private List<InventorySlot> slots = new ArrayList<>();
 
-    public Inventory(Player player, int initialSize) {
-        this.player = player;
+    public Inventory( int initialSize) {
+
         this.capacity = initialSize;
         for (int i = 0; i < initialSize; i++) {
 
@@ -51,7 +50,7 @@ public class Inventory {
         this.id = inventory.id;
         this.player = inventory.player;
         this.capacity = inventory.capacity;
-        this.slots = new ArrayList<>(capacity);
+        this.slots = new ArrayList<>();
         for (InventorySlot a : inventory.slots) {
             InventorySlot newSlot = new InventorySlot(a);
             this.addSlot(newSlot);

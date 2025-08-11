@@ -6,12 +6,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SwapInvInventoryAction extends PlayerInventoryAction {
+public class SwapSlotInventoryAction extends PlayerInventoryAction {
 
     private  InventorySlot sourceSlot;
     private InventorySlot targetSlot;
 
-    public SwapInvInventoryAction(InventorySlot sourceSlot, InventorySlot targetSlot) {
+    public SwapSlotInventoryAction(InventorySlot sourceSlot, InventorySlot targetSlot) {
         super("SWAP_INVENTORY");
         this.sourceSlot = sourceSlot;
         this.targetSlot = targetSlot;

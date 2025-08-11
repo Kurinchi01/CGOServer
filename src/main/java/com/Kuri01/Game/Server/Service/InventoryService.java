@@ -1,9 +1,10 @@
 package com.Kuri01.Game.Server.Service;
 
+import com.Kuri01.Game.Server.DTO.PlayerActionQueueDTO;
 import com.Kuri01.Game.Server.DTOMapper.InventoryMapper;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Action.EquipInventoryAction;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Action.PlayerInventoryAction;
-import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Action.SwapInvInventoryAction;
+import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Action.SwapSlotInventoryAction;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Action.UnequipInventoryAction;
 import com.Kuri01.Game.Server.Exceptions.SwapFailException;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.*;
@@ -27,20 +28,21 @@ public class InventoryService {
     private final PlayerRepository playerRepository;
     private final InventoryRepository inventoryRepository;
     private final EquipmentRepository equipmentRepository;
-    private InventoryMapper inventoryMapper;
+    private final InventoryMapper inventoryMapper;
 
 
     @Autowired
-    public InventoryService(PlayerRepository playerRepository, InventoryMapper inventoryMapper) {
-        this.inventoryRepository = inventoryMapper.getInventoryRepository();
+    public InventoryService(PlayerRepository playerRepository, InventoryRepository inventoryRepository, EquipmentRepository equipmentRepository, InventoryMapper inventoryMapper) {
         this.playerRepository = playerRepository;
-        this.equipmentRepository = inventoryMapper.getEquipmentRepository();
+        this.inventoryRepository = inventoryRepository;
+        this.equipmentRepository = equipmentRepository;
         this.inventoryMapper = inventoryMapper;
     }
 
     @Transactional
-    public void receiveIn(List<PlayerInventoryAction> actions, Player player) {
+    public void processPlayerActions(PlayerActionQueueDTO actionsDTO, Player player) {
 
+        List<PlayerInventoryAction> actions = inventoryMapper.createPlayerInventoryActionListFromDTO(actionsDTO, player);
 
         Inventory inventoryCopy = inventoryRepository.findByPlayer(player).orElseThrow();
         Equipment equipmentCopy = equipmentRepository.findByPlayer(player).orElseThrow();
@@ -48,7 +50,7 @@ public class InventoryService {
         for (PlayerInventoryAction a : actions) {
 
             //Aus Inv ins Inv Verschieben
-            if (a instanceof SwapInvInventoryAction b) {
+            if (a instanceof SwapSlotInventoryAction b) {
 
                 InventorySlot sourceSlot = b.getSourceSlot();
                 InventorySlot targetSlot = b.getTargetSlot();
@@ -138,7 +140,7 @@ public class InventoryService {
     }
 
 
-    @Transactional
+
     public void swapItems(Inventory inventory, InventorySlot sourceSlot, InventorySlot targetSlot) {
         Item tmpItem = targetSlot.getItem();
 
@@ -151,7 +153,7 @@ public class InventoryService {
 
     }
 
-    @Transactional
+
     public void equipItem(Inventory inventory, InventorySlot sourceSlot, EquipmentSlot targetSlot) {
         Item tmpItem = targetSlot.getItem();
 
@@ -165,7 +167,7 @@ public class InventoryService {
 
     }
 
-    @Transactional
+
     public void unequipItem(EquipmentSlot sourceSlot, InventorySlot targetSlot) {
         Item tmpItem = targetSlot.getItem();
 

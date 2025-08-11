@@ -34,19 +34,11 @@ public class InventoryController {
     // Für den Anfang kann der GameService diese Logik noch enthalten.
     // Später könnte man sie in einen eigenen InventoryService auslagern.
     private final InventoryService inventoryService;
-    private final PlayerRepository playerRepository;
-    private final InventoryRepository inventoryRepository;
-    private final EquipmentRepository equipmentRepository;
-    private final InventoryMapper inventoryMapper;
+
 
     @Autowired
-    public InventoryController(PlayerRepository playerRepository, InventoryRepository inventoryRepository, EquipmentRepository equipmentRepository) {
-
-        this.inventoryRepository = inventoryRepository;
-        this.playerRepository = playerRepository;
-        this.equipmentRepository = equipmentRepository;
-        this.inventoryMapper = new InventoryMapper(inventoryRepository, equipmentRepository);
-        inventoryService = new InventoryService(playerRepository, inventoryMapper);
+    public InventoryController(InventoryService inventoryService) {
+        this.inventoryService = inventoryService;
     }
 
     /**
@@ -67,13 +59,12 @@ public class InventoryController {
 
 
     @PostMapping("/action/inventory")
-    public ResponseEntity<?> reciveInventory(@RequestBody PlayerActionQueueDTO actions, Authentication authentication) {
+    public ResponseEntity<?> receiveInventoryActions(@RequestBody PlayerActionQueueDTO actions, Authentication authentication) {
 
         try {
             Player loggedInPlayer = (Player) authentication.getPrincipal();
-            List<PlayerInventoryAction> tmpPlayerActions = inventoryMapper.createPlayerInventoryActionListFromDTO(actions, loggedInPlayer);
 
-            inventoryService.receiveIn(tmpPlayerActions, loggedInPlayer);
+            inventoryService.processPlayerActions(actions, loggedInPlayer);
 
             return ResponseEntity.noContent().build();
         } catch (NoSuchElementException e) {

@@ -1,28 +1,28 @@
 package com.Kuri01.Game.Server.DTOMapper;
 
-import com.Kuri01.Game.Server.DTO.EquipmentSlotDTO;
-import com.Kuri01.Game.Server.DTO.InventorySlotDTO;
-import com.Kuri01.Game.Server.DTO.PlayerActionDTO;
-import com.Kuri01.Game.Server.DTO.PlayerActionQueueDTO;
+import com.Kuri01.Game.Server.DTO.*;
+import com.Kuri01.Game.Server.Model.RPG.ItemSystem.*;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Action.EquipInventoryAction;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Action.PlayerInventoryAction;
-import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Action.SwapInvInventoryAction;
+import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Action.SwapSlotInventoryAction;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.Action.UnequipInventoryAction;
-import com.Kuri01.Game.Server.Model.RPG.ItemSystem.EquipmentSlot;
-import com.Kuri01.Game.Server.Model.RPG.ItemSystem.InventorySlot;
 import com.Kuri01.Game.Server.Model.RPG.Player;
 import com.Kuri01.Game.Server.Repository.EquipmentRepository;
 import com.Kuri01.Game.Server.Repository.InventoryRepository;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
 @Slf4j
+@Component
 public class InventoryMapper {
     private final InventoryRepository inventoryRepository;
     private final EquipmentRepository equipmentRepository;
@@ -32,7 +32,7 @@ public class InventoryMapper {
         this.equipmentRepository = equipmentRepository;
     }
 
-    /// _____________________________________ DTO to PlayerInventoryAction Mapper _______________________________________________________
+    /// _______________________________ DTO to PlayerInventoryAction Mapper ____________________________________________
 
     public List<PlayerInventoryAction> createPlayerInventoryActionListFromDTO(PlayerActionQueueDTO playerActionQueueDTO, Player player) {
         List<PlayerInventoryAction> tmp = new ArrayList<>();
@@ -76,11 +76,11 @@ public class InventoryMapper {
         return new EquipInventoryAction(sourceSlot, targetSlot);
     }
 
-    public SwapInvInventoryAction createSwapInvInventoryActionFromDTO(PlayerActionDTO playerActionDTO, Player player) {
+    public SwapSlotInventoryAction createSwapInvInventoryActionFromDTO(PlayerActionDTO playerActionDTO, Player player) {
         InventorySlot sourceSlot = findInventorySlotFromDTO(playerActionDTO.getSourceInventorySlotDTO(), player);
         InventorySlot targetSlot = findInventorySlotFromDTO(playerActionDTO.getTargetInventorySlotDTO(), player);
 
-        return new SwapInvInventoryAction(sourceSlot, targetSlot);
+        return new SwapSlotInventoryAction(sourceSlot, targetSlot);
     }
 
 
@@ -91,4 +91,58 @@ public class InventoryMapper {
     public EquipmentSlot findEquipmentSlotFromDTO(EquipmentSlotDTO equipmentSlotDTO, Player player) {
         return equipmentRepository.findByPlayer(player).orElseThrow().getEquipmentSlots().get(equipmentSlotDTO.getSlotEnum());
     }
+
+    /// ______________________________________ Model to DTO Mapper _____________________________________________________
+
+    public InventoryDTO createDTOFromInventory(Inventory inventory) {
+        InventoryDTO inventoryDTO = new InventoryDTO();
+
+        inventoryDTO.setCapacity(inventory.getCapacity());
+        inventoryDTO.setInventorySlots(createDTOFromInventorySlot(inventory.getSlots()));
+
+        return inventoryDTO;
+    }
+
+    public List<InventorySlotDTO> createDTOFromInventorySlot(List<InventorySlot> slots) {
+        List<InventorySlotDTO> list = new ArrayList<>();
+        for (InventorySlot a : slots) {
+            InventorySlotDTO tmp = new InventorySlotDTO();
+            tmp.setSlotIndex(a.getSlotIndex());
+            tmp.setQuantity(a.getQuantity());
+            if (a.getItem() != null)
+                tmp.setItemID(a.getItem().getId());
+            else tmp.setItemID(null);
+            list.add(tmp);
+        }
+
+        return list;
+    }
+
+    public EquipmentDTO createDTOFromEquipment(Equipment equipment) {
+        if (equipment == null) return null;
+        EquipmentDTO equipmentDTO = new EquipmentDTO();
+
+        equipmentDTO.setEquipmentSlots(createDTOFromEquipmentSlot(equipment.getEquipmentSlots()));
+
+        return equipmentDTO;
+    }
+
+    public Map<EquipmentSlotEnum, EquipmentSlotDTO> createDTOFromEquipmentSlot(Map<EquipmentSlotEnum, EquipmentSlot> equipmentSlots) {
+        Map<EquipmentSlotEnum, EquipmentSlotDTO> map = new HashMap<>();
+
+        for (Map.Entry<EquipmentSlotEnum, EquipmentSlot> a : equipmentSlots.entrySet()) {
+            EquipmentSlotDTO tmp = new EquipmentSlotDTO();
+
+            tmp.setSlotEnum(a.getKey());
+            if (a.getValue().getItem() != null)
+                tmp.setItemID(a.getValue().getItem().getId());
+            else tmp.setItemID(null);
+
+            map.put(a.getKey(), tmp);
+
+        }
+
+        return map;
+    }
+
 }

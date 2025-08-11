@@ -1,6 +1,7 @@
 package com.Kuri01.Game.Server.Service;
 
 import com.Kuri01.Game.Server.DTO.*;
+import com.Kuri01.Game.Server.DTOMapper.InventoryMapper;
 import com.Kuri01.Game.Server.Model.RPG.Currency.PlayerWallet;
 import com.Kuri01.Game.Server.Model.RPG.ItemSystem.*;
 import com.Kuri01.Game.Server.Model.RPG.Player;
@@ -18,10 +19,12 @@ import java.util.Map;
 public class PlayerService {
     private final PlayerRepository playerRepository;
     private final ItemRepository itemRepository;
+    private final InventoryMapper inventoryMapper;
 
-    public PlayerService(PlayerRepository playerRepository, ItemRepository itemRepository) {
+    public PlayerService(PlayerRepository playerRepository, ItemRepository itemRepository, InventoryMapper inventoryMapper) {
         this.playerRepository = playerRepository;
         this.itemRepository = itemRepository;
+        this.inventoryMapper = inventoryMapper;
     }
 
     @Transactional(readOnly = true)
@@ -44,12 +47,13 @@ public class PlayerService {
         playerDTO.setId(player.getId());
         playerDTO.setName(player.getName());
         playerDTO.setLevel(player.getLevel());
+        playerDTO.setExperiencePoints(player.getExperiencePoints());
         playerDTO.setMaxHp(player.getMaxHp());
         playerDTO.setAttack(player.getAttack());
 
         //setze gekapseltewerte
-        playerDTO.setEquipmentDTO(createDTOFromEquipment(player.getEquipment()));
-        playerDTO.setInventoryDTO(createDTOFromInventory(player.getInventory()));
+        playerDTO.setEquipmentDTO(inventoryMapper.createDTOFromEquipment(player.getEquipment()));
+        playerDTO.setInventoryDTO(inventoryMapper.createDTOFromInventory(player.getInventory()));
         playerDTO.setPlayerWalletDTO(createDTOFromWallet(player.getPlayerWallet()));
 
 
@@ -77,6 +81,7 @@ public class PlayerService {
         itemDTO.setRarity(item.getRarity());
         itemDTO.setIconName(item.getIconName());
 
+        //maps
         itemDTO.setEquipmentSlotEnum(item.getEquipmentSlotEnum());
         itemDTO.setStats(item.getStats());
 
@@ -92,60 +97,5 @@ public class PlayerService {
 
         return playerWalletDTO;
     }
-
-    private InventoryDTO createDTOFromInventory(Inventory inventory) {
-        InventoryDTO inventoryDTO = new InventoryDTO();
-
-        inventoryDTO.setCapacity(inventory.getCapacity());
-        inventoryDTO.setInventorySlots(createDTOFromInventorySlot(inventory.getSlots()));
-
-        return inventoryDTO;
-    }
-
-    private List<InventorySlotDTO> createDTOFromInventorySlot(List<InventorySlot> slots) {
-        List<InventorySlotDTO> list = new ArrayList<>();
-        for (InventorySlot a : slots) {
-            InventorySlotDTO tmp = new InventorySlotDTO();
-            tmp.setSlotIndex(a.getSlotIndex());
-            tmp.setQuantity(a.getQuantity());
-            if (a.getItem() != null)
-                tmp.setItemID(a.getItem().getId());
-            else tmp.setItemID(null);
-            list.add(tmp);
-        }
-
-        return list;
-    }
-
-    private EquipmentDTO createDTOFromEquipment(Equipment equipment) {
-        EquipmentDTO equipmentDTO = new EquipmentDTO();
-
-        equipmentDTO.setEquipmentSlots(createDTOFromEquipmentSlot(equipment.getEquipmentSlots()));
-
-        return equipmentDTO;
-    }
-
-    private Map<EquipmentSlotEnum, EquipmentSlotDTO> createDTOFromEquipmentSlot(Map<EquipmentSlotEnum, EquipmentSlot> equipmentSlots) {
-        Map<EquipmentSlotEnum, EquipmentSlotDTO> map = new HashMap<>();
-
-        for (Map.Entry<EquipmentSlotEnum, EquipmentSlot> a : equipmentSlots.entrySet()) {
-            EquipmentSlotDTO tmp = new EquipmentSlotDTO();
-
-            tmp.setSlotEnum(a.getKey());
-            if (a.getValue().getItem() != null)
-                tmp.setItemID(a.getValue().getItem().getId());
-            else tmp.setItemID(null);
-
-            map.put(a.getKey(), tmp);
-
-        }
-
-        return map;
-    }
-
-
-    /// _______________________ Reverse Methoden __________________________________
-    ///                 Ertelle Models aus DTO
-
 
 }
