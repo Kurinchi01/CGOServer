@@ -7,6 +7,8 @@ import com.Kuri01.Game.Server.Model.Cards.BoardStatus;
 import com.Kuri01.Game.Server.DTO.Card.GeneratedBoard;
 import com.Kuri01.Game.Server.Model.Cards.PreCalculatedBoard;
 import com.Kuri01.Game.Server.Repository.Card.PreCalculatedBoardRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -17,14 +19,16 @@ import org.springframework.stereotype.Service;
 public class BoardGenerationService {
 
     private final PreCalculatedBoardRepository boardRepository;
-    private final BoardSolverService boardSolver; // Der (noch zu erstellende) Solver
-    private final BoardGenerator boardGenerator; // Der (noch zu erstellende) Generator
+    private final BoardSolverService boardSolver;
+    private final BoardGenerator boardGenerator;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    public BoardGenerationService(PreCalculatedBoardRepository boardRepository, BoardSolverService boardSolver, BoardGenerator boardGenerator) {
+    public BoardGenerationService(PreCalculatedBoardRepository boardRepository, BoardSolverService boardSolver, BoardGenerator boardGenerator,ObjectMapper objectMapper) {
         this.boardRepository = boardRepository;
         this.boardSolver = boardSolver;
         this.boardGenerator = boardGenerator;
+        this.objectMapper = objectMapper;
     }
 
     /**
@@ -59,15 +63,26 @@ public class BoardGenerationService {
 
             // 3. Wenn es lösbar ist, speichere es in der Datenbank
             if (analysis.isSolvable()) {
-//                PreCalculatedBoard preCalculatedBoard = new PreCalculatedBoard();
-//                preCalculatedBoard.setBoardLayoutJson(board.getLayoutAsJson());
-//                preCalculatedBoard.setStockPileJson(board.getStockAsJson());
-//                preCalculatedBoard.setSolvable(true);
-//                preCalculatedBoard.setDifficultyScore(analysis.getDifficulty());
-//                preCalculatedBoard.setLongestCombo(analysis.getLongestCombo());
+                try{
+                PreCalculatedBoard preCalculatedBoard = new PreCalculatedBoard();
 
-//                boardRepository.save(preCalculatedBoard);
+                String layoutJson = objectMapper.writeValueAsString(board.boardLayout());
+                preCalculatedBoard.setBoardLayoutJson(layoutJson);
+
+                String stockJson = objectMapper.writeValueAsString(board.stockPile());
+
+                preCalculatedBoard.setStockPileJson(stockJson);
+                preCalculatedBoard.setSolvable(true);
+                preCalculatedBoard.setDifficultyScore(analysis.difficulty());
+                preCalculatedBoard.setLongestCombo(analysis.longestCombo());
+
+                boardRepository.save(preCalculatedBoard);
                 generatedCount++;
+            }
+                catch (JsonProcessingException e) {
+                    // Fange den Fehler ab, falls die Umwandlung in JSON fehlschlägt.
+                    log.error("Fehler beim Konvertieren des Boards in JSON", e);
+                }
             }
         }
         log.info("Task beendet. {} neue, lösbare Spielfelder zum Pool hinzugefügt.", generatedCount);

@@ -24,10 +24,10 @@ public class CardState {
 
 
     //copy Konstruktor
-    public CardState(CardState cardState) {
-        this.card = cardState.card;
-        this.isRemoved = cardState.isRemoved;
-        this.blocksCards = cardState.blocksCards;
-        this.isFaceUp = cardState.isFaceUp;
+    public CardState(CardState other) {
+        this.card = other.card; // Die Karte selbst ist unveränderlich, eine Referenzkopie reicht
+        this.isFaceUp = other.isFaceUp;
+        this.isRemoved = other.isRemoved;
+        this.blocksCards = new ArrayList<>(other.blocksCards); // Erstelle eine neue Liste
     }
 }
