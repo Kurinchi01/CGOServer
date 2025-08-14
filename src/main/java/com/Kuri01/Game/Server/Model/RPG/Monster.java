@@ -13,7 +13,7 @@ public class Monster extends Character {
 
     @Enumerated(EnumType.STRING)
     private Rarity rarity;
-
+    private String spriteName;
     
     // Wichtig für JPA: ein leerer Konstruktor
     protected Monster() {

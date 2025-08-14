@@ -180,13 +180,16 @@ class BoardSolverServiceTest {
         // ARRANGE: Karte 9 wird von 18 und 19 blockiert. Wir entfernen beide.
         testState.getBoard().get(18).setRemoved(true);
         testState.getBoard().get(19).setRemoved(true);
+        testState.getBoard().get(20).setRemoved(true);
         // Dadurch sollte Karte 9 jetzt aufgedeckt sein (diese Logik gehört in playBoardCard)
         // Für den Test setzen wir sie manuell.
         testState.getBoard().get(9).setFaceUp(true);
+        testState.getBoard().get(10).setFaceUp(true);
 
         // Die Waste-Karte ist eine 6. Die Karte bei Index 9 hat den Wert 7.
         testState.getBoard().get(9).getCard().setValue(7);
         testState.getWaste().add(new Card(Card.Suit.heart, 6));
+        testState.getBoard().get(10).getCard().setValue(8);
 
         // ACT
         List<Integer> playableCards = boardSolverService.findPlayableBoardCards(testState);
@@ -195,7 +198,17 @@ class BoardSolverServiceTest {
 
         assertEquals(7, testState.getWaste().get(testState.getWaste().size() - 1).getValue());
 
-        assertEquals(10, testState.getBoard().get(3).blocksCards.get(0));
+        assertFalse(testState.getBoard().get(3).isFaceUp);
+
+        playableCards = boardSolverService.findPlayableBoardCards(testState);
+
+        assertEquals(1, playableCards.size());
+
+        boardSolverService.playBoardCard(testState, playableCards.get(0));
+
+        assertTrue(testState.getBoard().get(3).isFaceUp);
+
+
 
     }
 
@@ -220,6 +233,8 @@ class BoardSolverServiceTest {
         assertEquals(0,testState.getCurrentCombo());
 
     }
+
+
 
     @Test
     void analyze_withPerfectlySolvableBoard_shouldSucceed() {
@@ -261,6 +276,24 @@ class BoardSolverServiceTest {
 
         // Da alle 28 Karten in einer Kette abgeräumt werden können, sollte die längste Combo 28 sein.
         assertEquals(28, result.longestCombo(), "Die längste Combo sollte 28 sein.");
+    }
+
+    @Test
+    void analyze_withUnsolvableBoard_shouldFail() {
+        // ========== ARRANGE (Vorbereiten) ==========
+        // Unlösbares Feld: Nur Könige (13) auf dem Feld, nur Asse (1) im Stapel.
+        // Die Startkarte ist eine 7, daher kann kein Zug gemacht werden.
+        List<Card> boardLayout = new ArrayList<>(Collections.nCopies(28, new Card(Card.Suit.heart, 13)));
+        List<Card> stockPile = new ArrayList<>(Collections.nCopies(24, new Card(Card.Suit.heart, 1)));
+        stockPile.set(0, new Card(Card.Suit.diamond, 7)); // Startkarte ist eine 7
+
+        GeneratedBoard unsolvableBoard = new GeneratedBoard(boardLayout, stockPile);
+
+        // ========== ACT (Ausführen) ==========
+        SolverResult result = boardSolverService.analyze(unsolvableBoard);
+
+        // ========== ASSERT (Überprüfen) ==========
+        assertFalse(result.isSolvable(), "Dieses Spielfeld sollte als unlösbar erkannt werden.");
     }
 
 }

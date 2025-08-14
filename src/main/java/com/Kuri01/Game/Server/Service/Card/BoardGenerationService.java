@@ -41,7 +41,7 @@ public class BoardGenerationService {
         log.info("Starte geplanten Task: Generiere und analysiere neue Spielfelder...");
 
         long availableBoards = boardRepository.countByStatus(BoardStatus.AVAILABLE);
-        final long TARGET_POOL_SIZE = 5000; // Ziel: immer 5000 verfügbare Boards haben
+        final long TARGET_POOL_SIZE = 20; // Ziel: immer 5000 verfügbare Boards haben
 
         if (availableBoards >= TARGET_POOL_SIZE) {
             log.info("Board-Pool ist ausreichend gefüllt ({} verfügbare Boards). Überspringe Generierung.", availableBoards);
